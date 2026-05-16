@@ -1,0 +1,312 @@
+2026-05-11 19:00:48.538 +03:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-05-11 19:00:48.627 +03:00 [INF] Executed DbCommand (34ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-05-11 19:00:48.632 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-05-11 19:00:48.634 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-05-11 19:00:48.657 +03:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-05-11 19:00:48.674 +03:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-11 19:00:48.725 +03:00 [INF] User profile is available. Using 'C:\Users\TC\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-11 19:00:49.141 +03:00 [INF] Executed DbCommand (116ms) [Parameters=[@__normalizedName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedName_0
+2026-05-11 19:00:49.196 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedName_0
+2026-05-11 19:00:49.200 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedName_0
+2026-05-11 19:00:49.214 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[@__normalizedEmail_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AcademicYear], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[CreatedAt], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[IsActive], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[StudentId], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @__normalizedEmail_0
+2026-05-11 19:00:49.292 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Courses] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-05-11 19:00:49.436 +03:00 [INF] QR Refresh Background Service بدأ — كل 30 ثانية
+2026-05-11 19:00:49.693 +03:00 [INF] Now listening on: https://localhost:7050
+2026-05-11 19:00:49.694 +03:00 [INF] Now listening on: http://localhost:5250
+2026-05-11 19:00:49.780 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-11 19:00:49.781 +03:00 [INF] Hosting environment: Development
+2026-05-11 19:00:49.783 +03:00 [INF] Content root path: D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem
+2026-05-11 19:00:50.253 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/ - null null
+2026-05-11 19:00:50.449 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.HomeController.Index (QRAttendanceSystem)'
+2026-05-11 19:00:50.476 +03:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller QRAttendanceSystem.Controllers.HomeController (QRAttendanceSystem).
+2026-05-11 19:00:50.504 +03:00 [INF] Executing RedirectResult, redirecting to /Account/Login.
+2026-05-11 19:00:50.511 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.HomeController.Index (QRAttendanceSystem) in 27.4356ms
+2026-05-11 19:00:50.514 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.HomeController.Index (QRAttendanceSystem)'
+2026-05-11 19:00:50.516 +03:00 [INF] HTTP GET / responded 302 in 67.5097 ms
+2026-05-11 19:00:50.530 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/ - 302 0 null 288.6315ms
+2026-05-11 19:00:50.543 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Account/Login - null null
+2026-05-11 19:00:50.552 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:00:50.562 +03:00 [INF] Route matched with {action = "Login", controller = "Account"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(System.String) on controller QRAttendanceSystem.Controllers.AccountController (QRAttendanceSystem).
+2026-05-11 19:00:50.672 +03:00 [INF] Executing ViewResult, running view Login.
+2026-05-11 19:00:50.793 +03:00 [INF] Executed ViewResult - view Login executed in 129.2283ms.
+2026-05-11 19:00:50.799 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem) in 233.031ms
+2026-05-11 19:00:50.804 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:00:50.806 +03:00 [INF] HTTP GET /Account/Login responded 200 in 254.6935 ms
+2026-05-11 19:00:50.810 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:00:50.815 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Account/Login - 200 null text/html; charset=utf-8 271.7877ms
+2026-05-11 19:00:50.884 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 73.9947ms
+2026-05-11 19:00:52.510 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:00:52.519 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:00:52.521 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 11.9162ms
+2026-05-11 19:00:55.531 +03:00 [INF] Executed DbCommand (1,066ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id]
+FROM [Sessions] AS [s]
+WHERE [s].[IsActive] = CAST(1 AS bit) AND [s].[QrExpiresAt] > GETUTCDATE()
+2026-05-11 19:01:22.245 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:01:22.248 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:01:22.249 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 4.0932ms
+2026-05-11 19:01:25.600 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id]
+FROM [Sessions] AS [s]
+WHERE [s].[IsActive] = CAST(1 AS bit) AND [s].[QrExpiresAt] > GETUTCDATE()
+2026-05-11 19:01:32.157 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Account/ForgotPassword - null null
+2026-05-11 19:01:32.168 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.AccountController.ForgotPassword (QRAttendanceSystem)'
+2026-05-11 19:01:32.172 +03:00 [INF] Route matched with {action = "ForgotPassword", controller = "Account"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ForgotPassword() on controller QRAttendanceSystem.Controllers.AccountController (QRAttendanceSystem).
+2026-05-11 19:01:32.176 +03:00 [INF] Executing ViewResult, running view ForgotPassword.
+2026-05-11 19:01:32.193 +03:00 [INF] Executed ViewResult - view ForgotPassword executed in 17.7531ms.
+2026-05-11 19:01:32.195 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.AccountController.ForgotPassword (QRAttendanceSystem) in 20.8636ms
+2026-05-11 19:01:32.197 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.AccountController.ForgotPassword (QRAttendanceSystem)'
+2026-05-11 19:01:32.198 +03:00 [INF] HTTP GET /Account/ForgotPassword responded 200 in 29.6929 ms
+2026-05-11 19:01:32.201 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Account/ForgotPassword - 200 null text/html; charset=utf-8 43.6677ms
+2026-05-11 19:01:32.203 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:01:32.223 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 20.2521ms
+2026-05-11 19:01:33.758 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:01:33.763 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:01:33.764 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 6.1043ms
+2026-05-11 19:01:37.042 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Account/Login - null null
+2026-05-11 19:01:37.046 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:01:37.047 +03:00 [INF] Route matched with {action = "Login", controller = "Account"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(System.String) on controller QRAttendanceSystem.Controllers.AccountController (QRAttendanceSystem).
+2026-05-11 19:01:37.056 +03:00 [INF] Executing ViewResult, running view Login.
+2026-05-11 19:01:37.061 +03:00 [INF] Executed ViewResult - view Login executed in 4.9515ms.
+2026-05-11 19:01:37.062 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem) in 13.5114ms
+2026-05-11 19:01:37.063 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:01:37.065 +03:00 [INF] HTTP GET /Account/Login responded 200 in 19.6023 ms
+2026-05-11 19:01:37.069 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Account/Login - 200 null text/html; charset=utf-8 26.4743ms
+2026-05-11 19:01:38.646 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:01:38.650 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:01:38.651 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 5.5382ms
+2026-05-11 19:01:38.654 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Account/Register - null null
+2026-05-11 19:01:38.657 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.AccountController.Register (QRAttendanceSystem)'
+2026-05-11 19:01:38.660 +03:00 [INF] Route matched with {action = "Register", controller = "Account"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Register() on controller QRAttendanceSystem.Controllers.AccountController (QRAttendanceSystem).
+2026-05-11 19:01:38.665 +03:00 [INF] Executing ViewResult, running view Register.
+2026-05-11 19:01:38.699 +03:00 [INF] Executed ViewResult - view Register executed in 34.9268ms.
+2026-05-11 19:01:38.700 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.AccountController.Register (QRAttendanceSystem) in 36.9339ms
+2026-05-11 19:01:38.702 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.AccountController.Register (QRAttendanceSystem)'
+2026-05-11 19:01:38.703 +03:00 [INF] HTTP GET /Account/Register responded 200 in 46.3075 ms
+2026-05-11 19:01:38.705 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:01:38.706 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Account/Register - 200 null text/html; charset=utf-8 52.0836ms
+2026-05-11 19:01:38.719 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 14.1723ms
+2026-05-11 19:01:40.594 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:01:40.598 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:01:40.599 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 5.1299ms
+2026-05-11 19:01:55.617 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id]
+FROM [Sessions] AS [s]
+WHERE [s].[IsActive] = CAST(1 AS bit) AND [s].[QrExpiresAt] > GETUTCDATE()
+2026-05-11 19:02:03.638 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Account/Login - null null
+2026-05-11 19:02:03.642 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:02:03.645 +03:00 [INF] Route matched with {action = "Login", controller = "Account"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(System.String) on controller QRAttendanceSystem.Controllers.AccountController (QRAttendanceSystem).
+2026-05-11 19:02:03.649 +03:00 [INF] Executing ViewResult, running view Login.
+2026-05-11 19:02:03.653 +03:00 [INF] Executed ViewResult - view Login executed in 4.8979ms.
+2026-05-11 19:02:03.656 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem) in 7.7323ms
+2026-05-11 19:02:03.657 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:02:03.659 +03:00 [INF] HTTP GET /Account/Login responded 200 in 16.2378 ms
+2026-05-11 19:02:03.661 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Account/Login - 200 null text/html; charset=utf-8 23.6931ms
+2026-05-11 19:02:03.663 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:02:03.676 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 12.8282ms
+2026-05-11 19:02:05.219 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:02:05.222 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:02:05.223 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 4.6179ms
+2026-05-11 19:02:05.397 +03:00 [INF] Request starting HTTP/2 POST https://localhost:7050/Account/Login - application/x-www-form-urlencoded 255
+2026-05-11 19:02:05.402 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:02:05.409 +03:00 [INF] Route matched with {action = "Login", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(QRAttendanceSystem.ViewModels.Account.LoginViewModel, System.String) on controller QRAttendanceSystem.Controllers.AccountController (QRAttendanceSystem).
+2026-05-11 19:02:05.443 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AcademicYear], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[CreatedAt], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[IsActive], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[StudentId], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2026-05-11 19:02:05.568 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__user_Id_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[Id], [a].[ClaimType], [a].[ClaimValue], [a].[UserId]
+FROM [AspNetUserClaims] AS [a]
+WHERE [a].[UserId] = @__user_Id_0
+2026-05-11 19:02:05.594 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[@__userId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @__userId_0
+2026-05-11 19:02:05.599 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedName_0
+2026-05-11 19:02:05.607 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__role_Id_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[ClaimType], [a].[ClaimValue]
+FROM [AspNetRoleClaims] AS [a]
+WHERE [a].[RoleId] = @__role_Id_0
+2026-05-11 19:02:05.614 +03:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2026-05-11 19:02:05.619 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__normalizedEmail_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AcademicYear], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[CreatedAt], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[IsActive], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[StudentId], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @__normalizedEmail_0
+2026-05-11 19:02:05.770 +03:00 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (DbType = DateTime2), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [AuditLogs] ([Action], [CreatedAt], [Details], [IpAddress], [UserId])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2, @p3, @p4);
+2026-05-11 19:02:05.795 +03:00 [INF] Executing RedirectResult, redirecting to /.
+2026-05-11 19:02:05.799 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem) in 386.3201ms
+2026-05-11 19:02:05.800 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.AccountController.Login (QRAttendanceSystem)'
+2026-05-11 19:02:05.800 +03:00 [INF] HTTP POST /Account/Login responded 302 in 398.6159 ms
+2026-05-11 19:02:05.806 +03:00 [INF] Request finished HTTP/2 POST https://localhost:7050/Account/Login - 302 null null 408.5883ms
+2026-05-11 19:02:05.808 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/ - null null
+2026-05-11 19:02:05.815 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.HomeController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:05.817 +03:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller QRAttendanceSystem.Controllers.HomeController (QRAttendanceSystem).
+2026-05-11 19:02:05.847 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__p_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AcademicYear], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[CreatedAt], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[IsActive], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[StudentId], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[Id] = @__p_0
+2026-05-11 19:02:05.851 +03:00 [INF] Executing RedirectResult, redirecting to /Session.
+2026-05-11 19:02:05.852 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.HomeController.Index (QRAttendanceSystem) in 32.3138ms
+2026-05-11 19:02:05.853 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.HomeController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:05.853 +03:00 [INF] HTTP GET / responded 302 in 38.1408 ms
+2026-05-11 19:02:05.855 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/ - 302 0 null 47.0525ms
+2026-05-11 19:02:05.859 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Session - null null
+2026-05-11 19:02:05.867 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.SessionController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:05.872 +03:00 [INF] Route matched with {action = "Index", controller = "Session"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller QRAttendanceSystem.Controllers.SessionController (QRAttendanceSystem).
+2026-05-11 19:02:05.918 +03:00 [INF] Executed DbCommand (7ms) [Parameters=[@__doctorId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[CourseId], [s].[CreatedAt], [s].[CreatedByUserId], [s].[IsActive], [s].[LateLimitMinutes], [s].[QrExpiresAt], [s].[QrToken], [s].[SessionDate], [s].[Title], [s].[Type], [c].[Id], [c].[AcademicYear], [c].[Code], [c].[CreatedAt], [c].[CreditHours], [c].[IsActive], [c].[Name], [a].[Id], [a].[IpAddress], [a].[ScannedAt], [a].[SessionId], [a].[Status], [a].[UserId]
+FROM [Sessions] AS [s]
+INNER JOIN [Courses] AS [c] ON [s].[CourseId] = [c].[Id]
+LEFT JOIN [AttendanceRecords] AS [a] ON [s].[Id] = [a].[SessionId]
+WHERE [s].[CreatedByUserId] = @__doctorId_0
+ORDER BY [s].[CreatedAt] DESC, [s].[Id], [c].[Id]
+2026-05-11 19:02:05.961 +03:00 [INF] Executing ViewResult, running view Index.
+2026-05-11 19:02:05.995 +03:00 [INF] Executed ViewResult - view Index executed in 33.9529ms.
+2026-05-11 19:02:05.996 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.SessionController.Index (QRAttendanceSystem) in 122.6333ms
+2026-05-11 19:02:05.998 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.SessionController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:05.999 +03:00 [INF] HTTP GET /Session responded 200 in 131.3802 ms
+2026-05-11 19:02:06.001 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Session - 200 null text/html; charset=utf-8 142.4119ms
+2026-05-11 19:02:06.006 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:02:06.015 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 8.7859ms
+2026-05-11 19:02:06.042 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/manifest.json - null null
+2026-05-11 19:02:06.045 +03:00 [INF] The file /manifest.json was not modified
+2026-05-11 19:02:06.046 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/manifest.json - 304 null application/json 4.1215ms
+2026-05-11 19:02:07.603 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:02:07.605 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:02:07.606 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 3.5113ms
+2026-05-11 19:02:08.020 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Session - null null
+2026-05-11 19:02:08.028 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.SessionController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:08.029 +03:00 [INF] Route matched with {action = "Index", controller = "Session"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller QRAttendanceSystem.Controllers.SessionController (QRAttendanceSystem).
+2026-05-11 19:02:08.034 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__doctorId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[CourseId], [s].[CreatedAt], [s].[CreatedByUserId], [s].[IsActive], [s].[LateLimitMinutes], [s].[QrExpiresAt], [s].[QrToken], [s].[SessionDate], [s].[Title], [s].[Type], [c].[Id], [c].[AcademicYear], [c].[Code], [c].[CreatedAt], [c].[CreditHours], [c].[IsActive], [c].[Name], [a].[Id], [a].[IpAddress], [a].[ScannedAt], [a].[SessionId], [a].[Status], [a].[UserId]
+FROM [Sessions] AS [s]
+INNER JOIN [Courses] AS [c] ON [s].[CourseId] = [c].[Id]
+LEFT JOIN [AttendanceRecords] AS [a] ON [s].[Id] = [a].[SessionId]
+WHERE [s].[CreatedByUserId] = @__doctorId_0
+ORDER BY [s].[CreatedAt] DESC, [s].[Id], [c].[Id]
+2026-05-11 19:02:08.038 +03:00 [INF] Executing ViewResult, running view Index.
+2026-05-11 19:02:08.042 +03:00 [INF] Executed ViewResult - view Index executed in 3.3188ms.
+2026-05-11 19:02:08.043 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.SessionController.Index (QRAttendanceSystem) in 11.4658ms
+2026-05-11 19:02:08.044 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.SessionController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:08.045 +03:00 [INF] HTTP GET /Session responded 200 in 17.4959 ms
+2026-05-11 19:02:08.047 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Session - 200 null text/html; charset=utf-8 27.3625ms
+2026-05-11 19:02:08.050 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:02:08.060 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 10.9173ms
+2026-05-11 19:02:08.965 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Session/Create - null null
+2026-05-11 19:02:08.973 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.SessionController.Create (QRAttendanceSystem)'
+2026-05-11 19:02:08.977 +03:00 [INF] Route matched with {action = "Create", controller = "Session"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create() on controller QRAttendanceSystem.Controllers.SessionController (QRAttendanceSystem).
+2026-05-11 19:02:08.990 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[AcademicYear], [c].[Code], [c].[CreatedAt], [c].[CreditHours], [c].[IsActive], [c].[Name]
+FROM [Courses] AS [c]
+WHERE [c].[IsActive] = CAST(1 AS bit)
+2026-05-11 19:02:08.994 +03:00 [INF] Executing ViewResult, running view Create.
+2026-05-11 19:02:09.027 +03:00 [INF] Executed ViewResult - view Create executed in 32.6312ms.
+2026-05-11 19:02:09.028 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.SessionController.Create (QRAttendanceSystem) in 49.2884ms
+2026-05-11 19:02:09.030 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.SessionController.Create (QRAttendanceSystem)'
+2026-05-11 19:02:09.031 +03:00 [INF] HTTP GET /Session/Create responded 200 in 58.2406 ms
+2026-05-11 19:02:09.033 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Session/Create - 200 null text/html; charset=utf-8 68.2214ms
+2026-05-11 19:02:09.035 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:02:09.047 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 11.44ms
+2026-05-11 19:02:10.608 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:02:10.610 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:02:10.611 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 4.1876ms
+2026-05-11 19:02:13.200 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Enrollment - null null
+2026-05-11 19:02:13.205 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.EnrollmentController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:13.210 +03:00 [INF] Route matched with {action = "Index", controller = "Enrollment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index(System.String) on controller QRAttendanceSystem.Controllers.EnrollmentController (QRAttendanceSystem).
+2026-05-11 19:02:13.223 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedRoleName_0
+2026-05-11 19:02:13.235 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__role_Id_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Id], [a0].[AcademicYear], [a0].[AccessFailedCount], [a0].[ConcurrencyStamp], [a0].[CreatedAt], [a0].[Email], [a0].[EmailConfirmed], [a0].[FullName], [a0].[IsActive], [a0].[LockoutEnabled], [a0].[LockoutEnd], [a0].[NormalizedEmail], [a0].[NormalizedUserName], [a0].[PasswordHash], [a0].[PhoneNumber], [a0].[PhoneNumberConfirmed], [a0].[SecurityStamp], [a0].[StudentId], [a0].[TwoFactorEnabled], [a0].[UserName]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetUsers] AS [a0] ON [a].[UserId] = [a0].[Id]
+WHERE [a].[RoleId] = @__role_Id_0
+2026-05-11 19:02:13.240 +03:00 [INF] Executing ViewResult, running view Index.
+2026-05-11 19:02:13.249 +03:00 [INF] Executed ViewResult - view Index executed in 9.6927ms.
+2026-05-11 19:02:13.251 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.EnrollmentController.Index (QRAttendanceSystem) in 38.3271ms
+2026-05-11 19:02:13.253 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.EnrollmentController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:13.254 +03:00 [INF] HTTP GET /Enrollment responded 200 in 49.6614 ms
+2026-05-11 19:02:13.256 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Enrollment - 200 null text/html; charset=utf-8 56.2091ms
+2026-05-11 19:02:13.258 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:02:13.267 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 9.2108ms
+2026-05-11 19:02:14.714 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/Analytics - null null
+2026-05-11 19:02:14.720 +03:00 [INF] Executing endpoint 'QRAttendanceSystem.Controllers.AnalyticsController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:14.724 +03:00 [INF] Route matched with {action = "Index", controller = "Analytics"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index(System.Nullable`1[System.Int32]) on controller QRAttendanceSystem.Controllers.AnalyticsController (QRAttendanceSystem).
+2026-05-11 19:02:14.817 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:02:14.819 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:02:14.820 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 3.0556ms
+2026-05-11 19:02:14.945 +03:00 [INF] Executed DbCommand (207ms) [Parameters=[@__userId_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT DISTINCT [c].[Id], [c].[AcademicYear], [c].[Code], [c].[CreatedAt], [c].[CreditHours], [c].[IsActive], [c].[Name]
+FROM [Sessions] AS [s]
+INNER JOIN [Courses] AS [c] ON [s].[CourseId] = [c].[Id]
+WHERE [s].[CreatedByUserId] = @__userId_0
+2026-05-11 19:02:14.977 +03:00 [INF] Executed DbCommand (9ms) [Parameters=[@__courseId_0='?' (DbType = Int32), @__userId_1='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[CourseId], [s].[CreatedAt], [s].[CreatedByUserId], [s].[IsActive], [s].[LateLimitMinutes], [s].[QrExpiresAt], [s].[QrToken], [s].[SessionDate], [s].[Title], [s].[Type], [c].[Id], [t].[Id], [t].[IpAddress], [t].[ScannedAt], [t].[SessionId], [t].[Status], [t].[UserId], [t].[Id0], [t].[AcademicYear], [t].[AccessFailedCount], [t].[ConcurrencyStamp], [t].[CreatedAt], [t].[Email], [t].[EmailConfirmed], [t].[FullName], [t].[IsActive], [t].[LockoutEnabled], [t].[LockoutEnd], [t].[NormalizedEmail], [t].[NormalizedUserName], [t].[PasswordHash], [t].[PhoneNumber], [t].[PhoneNumberConfirmed], [t].[SecurityStamp], [t].[StudentId], [t].[TwoFactorEnabled], [t].[UserName], [c].[AcademicYear], [c].[Code], [c].[CreatedAt], [c].[CreditHours], [c].[IsActive], [c].[Name]
+FROM [Sessions] AS [s]
+INNER JOIN [Courses] AS [c] ON [s].[CourseId] = [c].[Id]
+LEFT JOIN (
+    SELECT [a].[Id], [a].[IpAddress], [a].[ScannedAt], [a].[SessionId], [a].[Status], [a].[UserId], [a0].[Id] AS [Id0], [a0].[AcademicYear], [a0].[AccessFailedCount], [a0].[ConcurrencyStamp], [a0].[CreatedAt], [a0].[Email], [a0].[EmailConfirmed], [a0].[FullName], [a0].[IsActive], [a0].[LockoutEnabled], [a0].[LockoutEnd], [a0].[NormalizedEmail], [a0].[NormalizedUserName], [a0].[PasswordHash], [a0].[PhoneNumber], [a0].[PhoneNumberConfirmed], [a0].[SecurityStamp], [a0].[StudentId], [a0].[TwoFactorEnabled], [a0].[UserName]
+    FROM [AttendanceRecords] AS [a]
+    INNER JOIN [AspNetUsers] AS [a0] ON [a].[UserId] = [a0].[Id]
+) AS [t] ON [s].[Id] = [t].[SessionId]
+WHERE [s].[CourseId] = @__courseId_0 AND [s].[CreatedByUserId] = @__userId_1
+ORDER BY [s].[SessionDate], [s].[Id], [c].[Id], [t].[Id]
+2026-05-11 19:02:14.996 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[@__courseId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [e].[Id], [e].[AcademicYear], [e].[CourseId], [e].[EnrolledAt], [e].[UserId], [a].[Id], [a].[AcademicYear], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[CreatedAt], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[IsActive], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[StudentId], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [Enrollments] AS [e]
+INNER JOIN [AspNetUsers] AS [a] ON [e].[UserId] = [a].[Id]
+WHERE [e].[CourseId] = @__courseId_0
+2026-05-11 19:02:15.015 +03:00 [INF] Executing ViewResult, running view Index.
+2026-05-11 19:02:15.046 +03:00 [INF] Executed ViewResult - view Index executed in 31.3215ms.
+2026-05-11 19:02:15.048 +03:00 [INF] Executed action QRAttendanceSystem.Controllers.AnalyticsController.Index (QRAttendanceSystem) in 320.6136ms
+2026-05-11 19:02:15.050 +03:00 [INF] Executed endpoint 'QRAttendanceSystem.Controllers.AnalyticsController.Index (QRAttendanceSystem)'
+2026-05-11 19:02:15.051 +03:00 [INF] HTTP GET /Analytics responded 200 in 331.1817 ms
+2026-05-11 19:02:15.054 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/Analytics - 200 null text/html; charset=utf-8 339.8645ms
+2026-05-11 19:02:15.057 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/_vs/browserLink - null null
+2026-05-11 19:02:15.068 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/_vs/browserLink - 200 null text/javascript; charset=UTF-8 11.7002ms
+2026-05-11 19:02:16.732 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7050/sw.js - null null
+2026-05-11 19:02:16.735 +03:00 [INF] The file /sw.js was not modified
+2026-05-11 19:02:16.736 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7050/sw.js - 304 null text/javascript 4.0165ms
+2026-05-11 19:02:25.627 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id]
+FROM [Sessions] AS [s]
+WHERE [s].[IsActive] = CAST(1 AS bit) AND [s].[QrExpiresAt] > GETUTCDATE()
+2026-05-11 19:02:55.634 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id]
+FROM [Sessions] AS [s]
+WHERE [s].[IsActive] = CAST(1 AS bit) AND [s].[QrExpiresAt] > GETUTCDATE()

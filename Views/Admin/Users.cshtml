@@ -1,0 +1,81 @@
+﻿@model List<QRAttendanceSystem.Models.AppUser>
+@{
+    ViewData["Title"] = "إدارة المستخدمين";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold"><i class="fas fa-users me-2 text-primary"></i>المستخدمون</h4>
+</div>
+
+<!-- Search/Filter -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="بحث..." value="@ViewBag.Search">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="role" class="form-select">
+                    <option value="">كل الأدوار</option>
+                    <option value="Student" selected="@(ViewBag.Role == "Student")">طلاب</option>
+                    <option value="Doctor" selected="@(ViewBag.Role == "Doctor")">دكاترة</option>
+                    <option value="Admin" selected="@(ViewBag.Role == "Admin")">أدمن</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">بحث</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>الاسم</th>
+                        <th>البريد</th>
+                        <th>الرقم الجامعي</th>
+                        <th>السنة</th>
+                        <th>الحالة</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@user.FullName</td>
+                            <td class="text-muted">@user.Email</td>
+                            <td>@(user.StudentId ?? "-")</td>
+                            <td>@(user.AcademicYear.HasValue ? $"السنة {user.AcademicYear}" : "-")</td>
+                            <td>
+                                @if (user.IsActive)
+                                {
+                                    <span class="badge bg-success">نشط</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">معطل</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="ToggleUser" asp-route-id="@user.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm @(user.IsActive ? "btn-outline-danger" : "btn-outline-success")">
+                                        @(user.IsActive ? "تعطيل" : "تفعيل")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

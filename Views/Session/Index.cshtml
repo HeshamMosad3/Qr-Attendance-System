@@ -1,0 +1,67 @@
+﻿@model List<QRAttendanceSystem.Models.Session>
+@{
+    ViewData["Title"] = "جلساتي";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold"><i class="fas fa-chalkboard-teacher me-2 text-primary"></i>جلساتي</h4>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>جلسة جديدة
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card text-center py-5">
+        <div class="text-muted">
+            <i class="fas fa-inbox fa-4x mb-3 text-secondary"></i>
+            <h5>لا توجد جلسات بعد</h5>
+            <a asp-action="Create" class="btn btn-primary mt-2">إنشاء أول جلسة</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var session in Model)
+        {
+            bool isExpired = DateTime.UtcNow > session.QrExpiresAt;
+            <div class="col">
+                <div class="card h-100 @(session.IsActive && !isExpired ? "border-success" : "border-secondary") border-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="card-title fw-bold mb-0">@session.Title</h6>
+                            @if (!session.IsActive)
+                            {
+                                <span class="badge bg-secondary">موقوف</span>
+                            }
+                            else if (isExpired)
+                            {
+                                <span class="badge bg-warning text-dark">منتهي الصلاحية</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">نشط</span>
+                            }
+                        </div>
+                        <p class="text-muted small mb-1">
+                            <i class="fas fa-book me-1"></i>@session.Course?.Name
+                        </p>
+                        <p class="text-muted small mb-1">
+                            <i class="fas fa-calendar me-1"></i>@session.SessionDate.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                        <p class="text-muted small mb-3">
+                            <i class="fas fa-users me-1"></i>
+                            <span class="text-success fw-semibold">@session.AttendanceRecords.Count</span> حاضر
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a asp-action="Details" asp-route-id="@session.Id" class="btn btn-sm btn-outline-primary w-100">
+                            <i class="fas fa-eye me-1"></i>عرض التفاصيل والـ QR
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

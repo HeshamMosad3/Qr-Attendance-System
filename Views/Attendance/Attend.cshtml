@@ -1,0 +1,239 @@
+﻿@{
+    ViewData["Title"] = "تسجيل الحضور";
+    var sessionTitle = ViewBag.SessionTitle as string ?? "";
+    var courseName = ViewBag.CourseName as string ?? "";
+    var token = ViewBag.Token as string ?? "";
+    var isValid = (bool)(ViewBag.IsValid ?? false);
+    var message = ViewBag.Message as string ?? "";
+    bool gpsEnabled = ViewBag.GpsEnabled is bool b && b;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card text-center">
+            <div class="card-header py-4"
+                 style="background:linear-gradient(
+                135deg,#1e3a5f,#2d6a9f);
+                color:white; border-radius:12px 12px 0 0;">
+                <i class="fas fa-qrcode fa-3x mb-3"></i>
+                <h5 class="mb-1">تسجيل الحضور</h5>
+                <p class="mb-0 opacity-75 small">@courseName</p>
+            </div>
+
+            <div class="card-body p-4">
+                @if (!isValid)
+                {
+                    <div class="py-4">
+                        <i class="fas fa-exclamation-triangle
+                        fa-4x text-warning mb-3"></i>
+                        <h5 class="text-danger">@message</h5>
+                        <a asp-controller="Attendance"
+                               asp-action="MyRecords"
+                               class="btn btn-outline-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            سجل حضوري
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <!-- Session Info -->
+                    <div class="mb-4">
+                        <div class="p-3 rounded mb-3"
+                             style="background:#e8f4fd;">
+                            <h6 class="fw-bold mb-1">@sessionTitle</h6>
+                            <span class="badge bg-primary">
+                                @ViewBag.SessionType
+                            </span>
+                        </div>
+                    </div>
+
+                    @if (gpsEnabled)
+                    {
+                        <!-- GPS Status -->
+                        <div id="gpsStatus"
+                             class="alert alert-info mb-3">
+                            <div class="d-flex align-items-center
+                                justify-content-center gap-2">
+                                <div class="spinner-border spinner-border-sm"
+                                     role="status"></div>
+                                <span>جاري تحديد موقعك...</span>
+                            </div>
+                        </div>
+
+                        <!-- GPS Map Preview -->
+                        <div id="mapPreview"
+                             style="display:none;height:200px;
+                            border-radius:10px;
+                            overflow:hidden;margin-bottom:16px;
+                            border:2px solid #28a745;">
+                        </div>
+
+                        <form id="attendForm"
+                              asp-controller="Attendance"
+                              asp-action="ConfirmAttend"
+                              method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="token"
+                                   value="@token" />
+                            <input type="hidden" name="latitude"
+                                   id="latInput" value="" />
+                            <input type="hidden" name="longitude"
+                                   id="lngInput" value="" />
+
+                            <button type="submit"
+                                    id="submitBtn"
+                                    class="btn btn-success btn-lg
+                                w-100 mb-3"
+                                    disabled>
+                                <i class="fas fa-check-circle me-2"></i>
+                                تسجيل الحضور
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Attendance"
+                              asp-action="ConfirmAttend"
+                              method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="token"
+                                   value="@token" />
+                            <button type="submit"
+                                    class="btn btn-success btn-lg
+                                w-100 mb-3">
+                                <i class="fas fa-check-circle me-2"></i>
+                                نعم، سجّل حضوري
+                            </button>
+                        </form>
+                    }
+
+                    <a asp-controller="Attendance"
+                           asp-action="MyRecords"
+                           class="btn btn-outline-secondary w-100">
+                        إلغاء
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (isValid && gpsEnabled)
+{
+    @section Scripts {
+        <script>
+            const COLLEGE_LAT = @ViewBag.CollegeLat;
+            const COLLEGE_LNG = @ViewBag.CollegeLng;
+            const MAX_RADIUS  = @ViewBag.GpsRadius;
+
+            function getDistanceMeters(lat1, lng1, lat2, lng2) {
+                const R    = 6371000;
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLng = (lng2 - lng1) * Math.PI / 180;
+                const a =
+                    Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI/180) *
+                    Math.cos(lat2 * Math.PI/180) *
+                    Math.sin(dLng/2) * Math.sin(dLng/2);
+                return R * 2 * Math.atan2(
+                    Math.sqrt(a), Math.sqrt(1-a));
+            }
+
+            function setGpsStatus(ok, msg) {
+                const el = document.getElementById('gpsStatus');
+                el.className = `alert ${ok
+                    ? 'alert-success' : 'alert-danger'} mb-3`;
+                el.innerHTML = `<i class="fas ${ok
+                    ? 'fa-check-circle' : 'fa-times-circle'}
+                    me-2"></i>${msg}`;
+            }
+
+            function initMap(lat, lng, distance) {
+                const preview = document.getElementById('mapPreview');
+                preview.style.display = 'block';
+
+                // Static map بدون API key
+                const zoom = 16;
+                const mapUrl =
+                    `https://maps.googleapis.com/maps/api/staticmap?` +
+                    `center=${COLLEGE_LAT},${COLLEGE_LNG}` +
+                    `&zoom=${zoom}&size=600x200&maptype=roadmap` +
+                    `&markers=color:red|label:K|` +
+                    `${COLLEGE_LAT},${COLLEGE_LNG}` +
+                    `&markers=color:blue|label:S|${lat},${lng}`;
+
+                // Fallback بدون Google Maps
+                preview.innerHTML =
+                    `<div style="background:#e8f4fd;height:100%;
+                                 display:flex;align-items:center;
+                                 justify-content:center;
+                                 flex-direction:column;">
+                       <i class="fas fa-map-marker-alt
+                                  fa-2x text-success mb-2"></i>
+                       <p class="mb-0 fw-semibold text-success">
+                         تم تحديد موقعك
+                       </p>
+                       <p class="text-muted small">
+                         المسافة: ${Math.round(distance)} متر
+                         من الكلية
+                       </p>
+                     </div>`;
+            }
+
+            // طلب الموقع
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const lat  = pos.coords.latitude;
+                        const lng  = pos.coords.longitude;
+                        const dist = getDistanceMeters(
+                            lat, lng, COLLEGE_LAT, COLLEGE_LNG);
+
+                        document.getElementById('latInput')
+                            .value = lat;
+                        document.getElementById('lngInput')
+                            .value = lng;
+
+                        if (dist <= MAX_RADIUS) {
+                            setGpsStatus(true,
+                                `✅ أنت داخل نطاق الكلية ` +
+                                `(${Math.round(dist)} متر)`);
+                            document.getElementById('submitBtn')
+                                .disabled = false;
+                            initMap(lat, lng, dist);
+                        } else {
+                            setGpsStatus(false,
+                                `❌ أنت خارج نطاق الكلية ` +
+                                `(${Math.round(dist)} متر). ` +
+                                `يجب أن تكون على بُعد أقل من ` +
+                                `${MAX_RADIUS} متر.`);
+                            document.getElementById('submitBtn')
+                                .disabled = true;
+                        }
+                    },
+                    (err) => {
+                        const msgs = {
+                            1: 'رفضت السماح بالوصول للموقع. ' +
+                               'يجب السماح لتسجيل الحضور.',
+                            2: 'تعذّر تحديد موقعك. تأكد من ' +
+                               'تفعيل GPS.',
+                            3: 'انتهى وقت تحديد الموقع. ' +
+                               'حاول مرة أخرى.'
+                        };
+                        setGpsStatus(false,
+                            msgs[err.code] || 'خطأ في الموقع.');
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                setGpsStatus(false,
+                    'متصفحك لا يدعم تحديد الموقع.');
+            }
+        </script>
+    }
+}

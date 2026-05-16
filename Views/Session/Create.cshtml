@@ -1,0 +1,68 @@
+﻿@model QRAttendanceSystem.ViewModels.Session.CreateSessionViewModel
+@{
+    ViewData["Title"] = "جلسة جديدة";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #1e3a5f, #2d6a9f); color:white;">
+                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>إنشاء جلسة جديدة</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-semibold">عنوان الجلسة</label>
+                        <input asp-for="Title" class="form-control" placeholder="مثال: محاضرة الفصل الأول">
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label asp-for="Type" class="form-label fw-semibold">نوع الجلسة</label>
+                            <select asp-for="Type" class="form-select">
+                                <option value="0">محاضرة (Lecture)</option>
+                                <option value="1">سكشن (Section)</option>
+                                <option value="2">معمل (Lab)</option>
+                                <option value="3">امتحان (Exam)</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label asp-for="CourseId" class="form-label fw-semibold">المادة</label>
+                            <select asp-for="CourseId" class="form-select">
+                                <option value="">-- اختر المادة --</option>
+                                @foreach (var course in (List<QRAttendanceSystem.Models.Course>)ViewBag.Courses)
+                                {
+                                    <option value="@course.Id">@course.Name (@course.Code)</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CourseId" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-8 mb-3">
+                            <label asp-for="SessionDate" class="form-label fw-semibold">تاريخ ووقت الجلسة</label>
+                            <input asp-for="SessionDate" type="datetime-local" class="form-control">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <label asp-for="LateLimitMinutes" class="form-label fw-semibold">حد التأخير (دقيقة)</label>
+                            <input asp-for="LateLimitMinutes" type="number" min="1" max="120" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex mt-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1 py-2">
+                            <i class="fas fa-qrcode me-2"></i>إنشاء الجلسة وتوليد QR
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">إلغاء</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />

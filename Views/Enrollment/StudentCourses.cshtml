@@ -1,0 +1,107 @@
+﻿@model QRAttendanceSystem.ViewModels.Enrollment.StudentEnrollmentViewModel
+@{
+    ViewData["Title"] = "مواد الطالب";
+}
+
+<div class="d-flex align-items-center mb-4 gap-3">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-right me-1"></i>رجوع
+    </a>
+    <div>
+        <h4 class="mb-0 fw-bold">@Model.StudentName</h4>
+        <span class="text-muted small">
+            @Model.Email
+            @if (Model.AcademicYear.HasValue)
+            {
+                <span class="badge bg-primary ms-2">السنة @Model.AcademicYear</span>
+            }
+        </span>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- المواد المسجل فيها -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header fw-semibold" style="background:#e8f4fd;">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                المواد المسجل فيها (@Model.EnrolledCourses.Count)
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.EnrolledCourses.Any())
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p class="small">لم يسجل في أي مادة بعد</p>
+                    </div>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var course in Model.EnrolledCourses)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-semibold">@course.Name</span>
+                                    <span class="badge bg-secondary ms-2">@course.Code</span>
+                                    <div class="small text-muted">السنة @course.AcademicYear</div>
+                                </div>
+                                <form asp-action="Unenroll" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <input type="hidden" name="courseId" value="@course.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('إلغاء تسجيل هذه المادة؟')">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- المواد المتاحة للتسجيل -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header fw-semibold" style="background:#f8f4fd;">
+                <i class="fas fa-plus-circle text-primary me-2"></i>
+                إضافة مادة (@Model.AvailableCourses.Count متاح)
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.AvailableCourses.Any())
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-check-double fa-2x mb-2 text-success"></i>
+                        <p class="small">تم التسجيل في كل المواد المتاحة</p>
+                    </div>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var course in Model.AvailableCourses)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-semibold">@course.Name</span>
+                                    <span class="badge bg-secondary ms-2">@course.Code</span>
+                                    <div class="small text-muted">السنة @course.AcademicYear — @course.CreditHours ساعات</div>
+                                </div>
+                                <form asp-action="Enroll" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <input type="hidden" name="courseId" value="@course.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-plus"></i> تسجيل
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>

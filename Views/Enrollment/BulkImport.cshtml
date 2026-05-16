@@ -1,0 +1,59 @@
+﻿@model QRAttendanceSystem.ViewModels.Enrollment.BulkEnrollViewModel
+@{
+    ViewData["Title"] = "استيراد جماعي من Excel";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header fw-semibold" style="background:linear-gradient(135deg,#1e3a5f,#2d6a9f); color:white;">
+                <i class="fas fa-file-excel me-2"></i>استيراد تسجيل الطلاب من Excel
+            </div>
+            <div class="card-body p-4">
+                <!-- تعليمات -->
+                <div class="alert alert-info mb-4">
+                    <h6 class="fw-bold mb-2"><i class="fas fa-info-circle me-2"></i>تعليمات ملف Excel</h6>
+                    <p class="mb-1 small">يجب أن يحتوي الملف على أعمدة بالترتيب التالي:</p>
+                    <table class="table table-sm table-bordered mb-2">
+                        <thead class="table-light">
+                            <tr>
+                                <th>العمود A</th>
+                                <th>العمود B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>البريد الإلكتروني للطالب</td>
+                                <td>كود المادة (مثال: BUS101)</td>
+                            </tr>
+                            <tr class="text-muted">
+                                <td>student@email.com</td>
+                                <td>BUS101</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="mb-0 small text-muted">الصف الأول يُعتبر Header ويتم تخطيه تلقائياً</p>
+                </div>
+
+                <form asp-action="BulkImport" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="ExcelFile" class="form-label fw-semibold">ملف Excel (.xlsx)</label>
+                        <input asp-for="ExcelFile" type="file" accept=".xlsx" class="form-control">
+                        <span asp-validation-for="ExcelFile" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-success flex-grow-1 py-2">
+                            <i class="fas fa-upload me-2"></i>رفع الملف والاستيراد
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">إلغاء</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />

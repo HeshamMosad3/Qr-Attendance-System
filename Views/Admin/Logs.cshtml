@@ -1,0 +1,48 @@
+﻿@model List<QRAttendanceSystem.Models.AuditLog>
+@{
+    ViewData["Title"] = "سجل الأحداث"; int page = ViewBag.Page; int totalPages = (int)ViewBag.TotalPages;
+}
+
+<h4 class="mb-4 fw-bold"><i class="fas fa-history me-2 text-primary"></i>سجل الأحداث</h4>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 small">
+                <thead class="table-light">
+                    <tr>
+                        <th>الحدث</th>
+                        <th>المستخدم</th>
+                        <th>التفاصيل</th>
+                        <th>IP</th>
+                        <th>التوقيت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-primary">@log.Action</span></td>
+                            <td>@(log.User?.FullName ?? log.UserId ?? "نظام")</td>
+                            <td class="text-muted">@log.Details</td>
+                            <td class="text-muted">@log.IpAddress</td>
+                            <td class="text-muted">@log.CreatedAt.ToString("dd/MM HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        <nav>
+            <ul class="pagination pagination-sm mb-0 justify-content-center">
+                @for (int p = 1; p <= totalPages; p++)
+                {
+                    <li class="page-item @(p == page ? "active" : "")">
+                        <a class="page-link" asp-action="Logs" asp-route-page="@p">@p</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -1,0 +1,119 @@
+﻿@model QRAttendanceSystem.ViewModels.Admin.CourseViewModel
+@{
+    ViewData["Title"] = "إضافة مادة جديدة";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header py-3"
+                 style="background:linear-gradient(
+                135deg,#1e3a5f,#2d6a9f);
+                color:white;">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    إضافة مادة دراسية جديدة
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="CreateCourse" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger py-2 small">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label asp-for="Name"
+                                   class="form-label fw-semibold">
+                            </label>
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   placeholder="مثال: إدارة الأعمال">
+                            <span asp-validation-for="Name"
+                                  class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Code"
+                                   class="form-label fw-semibold">
+                            </label>
+                            <input asp-for="Code"
+                                   class="form-control"
+                                   placeholder="مثال: BUS101"
+                                   style="text-transform:uppercase;">
+                            <span asp-validation-for="Code"
+                                  class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="AcademicYear"
+                                   class="form-label fw-semibold">
+                            </label>
+                            <select asp-for="AcademicYear"
+                                    class="form-select">
+                                <option value="1">السنة الأولى</option>
+                                <option value="2">السنة الثانية</option>
+                                <option value="3">السنة الثالثة</option>
+                                <option value="4">السنة الرابعة</option>
+                            </select>
+                            <span asp-validation-for="AcademicYear"
+                                  class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CreditHours"
+                                   class="form-label fw-semibold">
+                            </label>
+                            <select asp-for="CreditHours"
+                                    class="form-select">
+                                <option value="1">1 ساعة</option>
+                                <option value="2">2 ساعة</option>
+                                <option value="3" selected>3 ساعات</option>
+                                <option value="4">4 ساعات</option>
+                                <option value="5">5 ساعات</option>
+                                <option value="6">6 ساعات</option>
+                            </select>
+                            <span asp-validation-for="CreditHours"
+                                  class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input asp-for="IsActive"
+                               class="form-check-input"
+                               type="checkbox"
+                               checked>
+                        <label asp-for="IsActive"
+                               class="form-check-label fw-semibold">
+                            المادة نشطة
+                        </label>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit"
+                                class="btn btn-primary flex-grow-1 py-2">
+                            <i class="fas fa-save me-2"></i>
+                            حفظ المادة
+                        </button>
+                        <a asp-action="Courses"
+                               class="btn btn-outline-secondary px-4">
+                            إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // تحويل الكود لـ Uppercase تلقائياً
+        document.querySelector('[name="Code"]')
+          .addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+          });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

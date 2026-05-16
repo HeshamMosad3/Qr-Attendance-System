@@ -1,0 +1,294 @@
+﻿@{
+    ViewData["Title"] = "مسح رمز QR";
+}
+
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card">
+      <div class="card-header py-3"
+           style="background:linear-gradient(
+                    135deg,#1e3a5f,#2d6a9f);
+                  color:white;
+                  border-radius:12px 12px 0 0;">
+        <h5 class="mb-0 text-center">
+          <i class="fas fa-camera me-2"></i>
+          مسح رمز QR بالكاميرا
+        </h5>
+      </div>
+
+      <div class="card-body p-0">
+
+        <!-- Camera Preview -->
+        <div id="cameraContainer"
+             style="position:relative;
+                    background:#000;
+                    min-height:300px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;">
+
+          <video id="video"
+                 style="width:100%;
+                        max-height:400px;
+                        object-fit:cover;
+                        display:none;"
+                 playsinline
+                 muted></video>
+
+          <canvas id="canvas"
+                  style="position:absolute;
+                         top:0;left:0;
+                         width:100%;height:100%;
+                         display:none;"></canvas>
+
+          <!-- Scanning Frame -->
+          <div id="scanFrame"
+               style="display:none;
+                      position:absolute;
+                      width:200px;height:200px;
+                      border:3px solid #fff;
+                      border-radius:12px;
+                      box-shadow:0 0 0 9999px
+                        rgba(0,0,0,.5);">
+            <div style="position:absolute;
+                        top:-3px;left:-3px;
+                        width:30px;height:30px;
+                        border-top:4px solid #28a745;
+                        border-left:4px solid #28a745;
+                        border-radius:4px 0 0 0;">
+            </div>
+            <div style="position:absolute;
+                        top:-3px;right:-3px;
+                        width:30px;height:30px;
+                        border-top:4px solid #28a745;
+                        border-right:4px solid #28a745;
+                        border-radius:0 4px 0 0;">
+            </div>
+            <div style="position:absolute;
+                        bottom:-3px;left:-3px;
+                        width:30px;height:30px;
+                        border-bottom:4px solid #28a745;
+                        border-left:4px solid #28a745;
+                        border-radius:0 0 0 4px;">
+            </div>
+            <div style="position:absolute;
+                        bottom:-3px;right:-3px;
+                        width:30px;height:30px;
+                        border-bottom:4px solid #28a745;
+                        border-right:4px solid #28a745;
+                        border-radius:0 0 4px 0;">
+            </div>
+            <!-- Scanning Line -->
+            <div id="scanLine"
+                 style="position:absolute;
+                        top:0;left:0;right:0;
+                        height:3px;
+                        background:linear-gradient(
+                          90deg,transparent,
+                          #28a745,transparent);
+                        animation:scanAnim 2s
+                          linear infinite;">
+            </div>
+          </div>
+
+          <!-- Start Button -->
+          <div id="startScreen"
+               class="text-center text-white p-4">
+            <i class="fas fa-camera fa-4x mb-3
+                       opacity-75"></i>
+            <p class="mb-3">
+              اضغط لبدء مسح رمز QR
+            </p>
+            <button id="startBtn"
+                    class="btn btn-light btn-lg px-4"
+                    onclick="startScanner()">
+              <i class="fas fa-play me-2"></i>
+              تشغيل الكاميرا
+            </button>
+          </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div id="statusBar"
+             class="p-3 text-center"
+             style="background:#f8f9fa;
+                    border-top:1px solid #eee;">
+          <p class="mb-0 text-muted small">
+            <i class="fas fa-info-circle me-1"></i>
+            وجّه الكاميرا نحو رمز QR الخاص بالجلسة
+          </p>
+        </div>
+
+        <!-- Result -->
+        <div id="resultSection"
+             class="p-4"
+             style="display:none;">
+          <div class="alert alert-success
+                      text-center mb-3">
+            <i class="fas fa-check-circle
+                       fa-2x mb-2 d-block"></i>
+            <strong>تم اكتشاف رمز QR!</strong>
+          </div>
+          <div class="d-grid gap-2">
+            <button id="confirmBtn"
+                    class="btn btn-success btn-lg"
+                    onclick="confirmAttend()">
+              <i class="fas fa-check me-2"></i>
+              تسجيل الحضور
+            </button>
+            <button class="btn btn-outline-secondary"
+                    onclick="resetScanner()">
+              <i class="fas fa-redo me-2"></i>
+              مسح مرة أخرى
+            </button>
+          </div>
+        </div>
+
+        <!-- Manual Input Fallback -->
+        <div class="p-3 border-top">
+          <details>
+            <summary class="text-muted small
+                            mb-2"
+                     style="cursor:pointer;">
+              <i class="fas fa-keyboard me-1"></i>
+              إدخال رمز يدوياً
+            </summary>
+            <div class="input-group mt-2">
+              <input type="text"
+                     id="manualToken"
+                     class="form-control"
+                     placeholder="الصق رابط الـ QR أو الرمز هنا">
+              <button class="btn btn-primary"
+                      onclick="manualSubmit()">
+                تسجيل
+              </button>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script src="~/js/qr-scanner.js"></script>
+<style>
+  @@keyframes scanAnim {
+    0%   { top: 0; }
+    50%  { top: calc(100% - 3px); }
+    100% { top: 0; }
+  }
+</style>
+<script>
+let scannedToken = null;
+let isProcessing = false;
+
+async function startScanner() {
+    const video  = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+
+    await QRScanner.init(video, canvas, onQrDetected);
+
+    const ok = await QRScanner.start();
+    if (!ok) {
+        showStatus(
+            '❌ تعذّر الوصول للكاميرا. ' +
+            'يرجى السماح بالوصول أو ' +
+            'استخدام الإدخال اليدوي.',
+            'danger');
+        return;
+    }
+
+    document.getElementById('startScreen')
+        .style.display = 'none';
+    video.style.display  = 'block';
+    canvas.style.display = 'block';
+    document.getElementById('scanFrame')
+        .style.display = 'block';
+
+    showStatus(
+        '🔍 جاري البحث عن رمز QR...',
+        'info');
+}
+
+function onQrDetected(data) {
+    if (isProcessing) return;
+    isProcessing = true;
+
+    // استخراج الـ token من الرابط
+    let token = data;
+    try {
+        const url    = new URL(data);
+        const params = new URLSearchParams(
+            url.search);
+        if (params.has('token'))
+            token = params.get('token');
+    } catch {
+        // مش URL — استخدم القيمة مباشرة
+    }
+
+    scannedToken = token;
+    QRScanner.stop();
+
+    // إظهار نتيجة
+    document.getElementById('video')
+        .style.display = 'none';
+    document.getElementById('canvas')
+        .style.display = 'none';
+    document.getElementById('scanFrame')
+        .style.display = 'none';
+    document.getElementById('resultSection')
+        .style.display = 'block';
+
+    showStatus('✅ تم اكتشاف رمز QR بنجاح!',
+        'success');
+}
+
+function confirmAttend() {
+    if (!scannedToken) return;
+    window.location.href =
+        `/Attendance/Attend?token=${
+            encodeURIComponent(scannedToken)}`;
+}
+
+function resetScanner() {
+    scannedToken = null;
+    isProcessing = false;
+
+    document.getElementById('resultSection')
+        .style.display = 'none';
+    document.getElementById('startScreen')
+        .style.display = 'block';
+
+    showStatus(
+        'وجّه الكاميرا نحو رمز QR الخاص بالجلسة',
+        'secondary');
+}
+
+function manualSubmit() {
+    const val = document.getElementById(
+        'manualToken').value.trim();
+    if (!val) return;
+
+    let token = val;
+    try {
+        const url    = new URL(val);
+        const params = new URLSearchParams(url.search);
+        if (params.has('token'))
+            token = params.get('token');
+    } catch { }
+
+    window.location.href =
+        `/Attendance/Attend?token=${
+            encodeURIComponent(token)}`;
+}
+
+function showStatus(msg, type) {
+    const bar = document.getElementById('statusBar');
+    bar.className = `p-3 text-center alert-${type}`;
+    bar.innerHTML =
+        `<p class="mb-0 small">${msg}</p>`;
+}
+</script>
+}

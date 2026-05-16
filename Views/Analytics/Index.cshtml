@@ -1,0 +1,255 @@
+﻿@model QRAttendanceSystem.ViewModels.Analytics.AnalyticsViewModel
+@{
+    ViewData["Title"] = "تحليلات الحضور";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold">
+        <i class="fas fa-chart-line me-2 text-primary"></i>
+        تحليلات الحضور — @Model.CourseName
+    </h4>
+    <form method="get" class="d-flex gap-2">
+        <select name="courseId" class="form-select form-select-sm" onchange="this.form.submit()">
+            @if (ViewBag.Courses != null)
+            {
+                foreach (var c in (List<QRAttendanceSystem.Models.Course>)ViewBag.Courses)
+                {
+                    @* استخدام selected كخاصية منطقية يحل مشكلة الـ Tag Helper *@
+                    <option value="@c.Id" selected="@(c.Id == Model.CourseId)">
+                        @c.Name
+                    </option>
+                }
+            }
+        </select>
+    </form>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#1e3a5f,#2d6a9f);color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@Model.TotalSessions</div>
+                <div class="small opacity-75">جلسات</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#28a745,#20c997);color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@Model.TotalAttendance</div>
+                <div class="small opacity-75">إجمالي الحضور</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#6f42c1,#a45de0);color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@Model.OverallAttendanceRate%</div>
+                <div class="small opacity-75">نسبة الحضور العامة</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#fd7e14,#ffc107);color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">
+                    @Model.TopAbsent.Count(s => s.AbsenceRate >= 25)
+                </div>
+                <div class="small opacity-75">طلاب في خطر غياب</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trend Chart -->
+<div class="row g-3 mb-4">
+    <div class="col-md-8">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">
+                <i class="fas fa-chart-line me-2"></i> تطور الحضور عبر الجلسات
+            </div>
+            <div class="card-body">
+                <div style="position:relative;height:260px;">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">
+                <i class="fas fa-clock me-2"></i> توزيع الحضور بالساعة
+            </div>
+            <div class="card-body">
+                <div style="position:relative;height:260px;">
+                    <canvas id="hourlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Heatmap -->
+<div class="card mb-4">
+    <div class="card-header fw-semibold">
+        <i class="fas fa-fire me-2 text-danger"></i> Heatmap — أنماط الحضور أيام الأسبوع
+    </div>
+    <div class="card-body">
+        <div id="heatmapContainer"></div>
+    </div>
+</div>
+
+<!-- Top Absent Students -->
+@if (Model.TopAbsent != null && Model.TopAbsent.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            <i class="fas fa-exclamation-triangle me-2 text-warning"></i> الطلاب الأكثر غياباً
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>الطالب</th>
+                            <th>الرقم الجامعي</th>
+                            <th>حضر</th>
+                            <th>من</th>
+                            <th>نسبة الغياب</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+                        }
+                        @foreach (var s in Model.TopAbsent)
+                        {
+                            <tr class="@(s.AbsenceRate >= 25 ? "table-warning" : "")">
+                                <td>@(i++)</td>
+                                <td class="fw-semibold">@s.Name</td>
+                                <td class="text-muted">@(s.StudentId ?? "-")</td>
+                                <td class="text-success fw-semibold">@s.Attended</td>
+                                <td class="text-muted">@s.TotalSessions</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height:8px;">
+                                            <div class="progress-bar @(s.AbsenceRate >= 25 ? "bg-danger" : "bg-success")"
+                                                 style="width:@s.AbsenceRate%">
+                                            </div>
+                                        </div>
+                                        <span class="small fw-semibold">@s.AbsenceRate%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (s.AbsenceRate >= 25)
+                                    {
+                                        <span class="badge bg-danger">⚠️ في خطر</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">طبيعي</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script>
+        const trendsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SessionTrends.Select(t => new { label = t.Label, rate = t.AttendanceRate, count = t.AttendanceCount })));
+        const hourlyData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.HourlyDistribution.Select(h => new { label = h.Label, count = h.Count })));
+        const heatmapData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeeklyHeatmap.Select(d => new { day = d.DayName, total = d.TotalCount })));
+
+        // Trend Line Chart
+        new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+        labels: trendsData.map(t => t.label),
+        datasets: [{
+        label: 'نسبة الحضور %',
+        data: trendsData.map(t => t.rate),
+        borderColor: '#2d6a9f',
+        backgroundColor: 'rgba(45,106,159,0.1)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#1e3a5f',
+        pointRadius: 5
+        }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+        y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }
+        }
+        }
+        });
+
+        // Hourly Bar Chart
+        new Chart(document.getElementById('hourlyChart'), {
+        type: 'bar',
+        data: {
+        labels: hourlyData.map(h => h.label),
+        datasets: [{
+        data: hourlyData.map(h => h.count),
+        backgroundColor: hourlyData.map(h => h.count > 0 ? 'rgba(45,106,159,0.7)' : 'rgba(200,200,200,0.3)'),
+        borderRadius: 4
+        }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+        });
+
+        // Heatmap Implementation
+        const heatmapContainer = document.getElementById('heatmapContainer');
+        const maxVal = Math.max(...heatmapData.map(d => d.total), 1);
+
+        const table = document.createElement('table');
+        table.style.cssText = 'width:100%; border-collapse:separate; border-spacing:4px;';
+
+        const headerRow = table.insertRow();
+        headerRow.insertCell().innerHTML = '<span style="font-size:11px; color:#888;">يوم</span>';
+        ['ص', 'ض', 'ع', 'م', 'ن', 'ح', 'س'].forEach(h => {
+        const th = headerRow.insertCell();
+        th.textContent = h;
+        th.style.cssText = 'text-align:center; font-size:11px; color:#888; padding:4px;';
+        });
+
+        heatmapData.forEach(d => {
+        const row = table.insertRow();
+        const labelCell = row.insertCell();
+        labelCell.textContent = d.day;
+        labelCell.style.cssText = 'font-size:12px; padding:4px 8px; white-space:nowrap;';
+
+        for (let i = 0; i < 7; i++) {
+        const cell = row.insertCell();
+        const intensity = d.total / maxVal;
+        const alpha = i === 3 ? Math.max(intensity, 0.05) : intensity * 0.3;
+            
+        cell.style.cssText = `background:rgba(45,106,159,${alpha}); width:40px; height:32px; border-radius:4px; text-align:center; font-size:11px; transition: 0.3s;`;
+            
+        if (i === 3 && d.total > 0) {
+        cell.textContent = d.total;
+        cell.style.color = intensity > 0.5 ? '#fff' : '#000';
+        }
+        }
+        });
+
+        heatmapContainer.innerHTML = '';
+        heatmapContainer.appendChild(table);
+    </script>
+}

@@ -1,0 +1,229 @@
+﻿@model QRAttendanceSystem.Models.Session
+@{
+    ViewData["Title"] = "تقرير الحضور";
+    var records = Model.AttendanceRecords.ToList();
+    int onTime = records.Count(r => r.Status == QRAttendanceSystem.Models.AttendanceStatus.OnTime);
+    int late = records.Count(r => r.Status == QRAttendanceSystem.Models.AttendanceStatus.Late);
+    int total = records.Count;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-1 fw-bold">
+            <i class="fas fa-file-alt me-2 text-primary"></i>تقرير الحضور
+        </h4>
+        <p class="text-muted mb-0">@Model.Title — @Model.Course?.Name</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="ExportPdf" asp-route-id="@Model.Id" class="btn btn-danger" target="_blank">
+            <i class="fas fa-file-pdf me-2"></i>تصدير PDF
+        </a>
+        <a asp-action="ExportExcel" asp-route-id="@Model.Id" class="btn btn-success">
+            <i class="fas fa-file-excel me-2"></i>تصدير Excel
+        </a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-right me-2"></i>رجوع
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#1e3a5f,#2d6a9f); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@total</div>
+                <div class="small opacity-75">إجمالي الحضور</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#28a745,#20c997); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@onTime</div>
+                <div class="small opacity-75">في الوقت</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#fd7e14,#ffc107); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@late</div>
+                <div class="small opacity-75">متأخر</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#6f42c1,#e83e8c); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">
+                    @(total > 0 ? Math.Round((double)onTime / total * 100, 1) : 0)%
+                </div>
+                <div class="small opacity-75">في الوقت %</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header fw-semibold">
+                <i class="fas fa-chart-pie me-2"></i>توزيع الحضور
+            </div>
+            <div class="card-body">
+                <div style="position:relative; height:220px;">
+                    <canvas id="attendChart" role="img"
+                            aria-label="مخطط دائري يوضح توزيع الحضور في الوقت والمتأخرين">
+                        في الوقت: @onTime، متأخر: @late
+                    </canvas>
+                </div>
+                <div style="display:flex; gap:16px; justify-content:center; margin-top:12px; font-size:12px; color:var(--color-text-secondary);">
+                    <span style="display:flex;align-items:center;gap:4px;">
+                        <span style="width:10px;height:10px;border-radius:2px;background:#28a745;display:inline-block;"></span>في الوقت @onTime
+                    </span>
+                    <span style="display:flex;align-items:center;gap:4px;">
+                        <span style="width:10px;height:10px;border-radius:2px;background:#fd7e14;display:inline-block;"></span>متأخر @late
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">
+                <i class="fas fa-info-circle me-2"></i>تفاصيل الجلسة
+            </div>
+            <div class="card-body">
+                <table class="table table-sm mb-0">
+                    <tr>
+                        <td class="text-muted fw-semibold" style="width:40%">المادة</td>
+                        <td>@Model.Course?.Name (@Model.Course?.Code)</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted fw-semibold">نوع الجلسة</td>
+                        <td><span class="badge bg-secondary">@Model.Type</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted fw-semibold">التاريخ</td>
+                        <td>@Model.SessionDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted fw-semibold">الدكتور</td>
+                        <td>@Model.CreatedBy?.FullName</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted fw-semibold">حد التأخير</td>
+                        <td>@Model.LateLimitMinutes دقيقة</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted fw-semibold">حالة الجلسة</td>
+                        <td>
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">نشطة</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">موقوفة</span>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold"><i class="fas fa-list me-2"></i>كشف الحضور التفصيلي</span>
+        <input type="text" id="searchInput" class="form-control form-control-sm w-auto"
+               placeholder="بحث باسم الطالب..." onkeyup="filterTable()">
+    </div>
+    <div class="card-body p-0">
+        @if (!records.Any())
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>لا يوجد حضور في هذه الجلسة</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="reportTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الطالب</th>
+                            <th>الرقم الجامعي</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>وقت التسجيل</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+                        }
+                        @foreach (var record in records.OrderBy(r => r.ScannedAt))
+                        {
+                            <tr>
+                                <td>@(i++)</td>
+                                <td class="fw-semibold">@record.User?.FullName</td>
+                                <td class="text-muted">@(record.User?.StudentId ?? "-")</td>
+                                <td class="text-muted small">@record.User?.Email</td>
+                                <td>@record.ScannedAt.ToString("HH:mm:ss")</td>
+                                <td>
+                                    @if (record.Status == QRAttendanceSystem.Models.AttendanceStatus.OnTime)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>في الوقت
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fas fa-clock me-1"></i>متأخر
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script>
+        new Chart(document.getElementById('attendChart'), {
+        type: 'doughnut',
+        data: {
+        labels: ['في الوقت', 'متأخر'],
+        datasets: [{
+        data: [@onTime, @late],
+        backgroundColor: ['#28a745', '#fd7e14'],
+        borderWidth: 0
+        }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }
+        }
+        });
+
+        function filterTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#reportTable tbody tr');
+        rows.forEach(row => {
+        const name = row.cells[1]?.textContent.toLowerCase() ?? '';
+        row.style.display = name.includes(input) ? '' : 'none';
+        });
+        }
+    </script>
+}

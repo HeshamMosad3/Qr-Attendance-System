@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>@ViewData["Title"] - نظام الحضور QR</title>
+    
+    <!-- Dark Mode Script -->
+    <script src="~/js/theme.js"></script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e3a5f">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; }
+        [data-bs-theme="dark"] body { background: #121212; }
+        .navbar-brand { font-weight: 700; }
+        .sidebar { min-height: calc(100vh - 56px); background: #1e3a5f; }
+        .sidebar .nav-link { color: rgba(255,255,255,.8); padding: .7rem 1.2rem; border-radius: 8px; margin: 2px 8px; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,.15); color: #fff; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+        .stat-card { border-radius: 12px; color: white; padding: 1.5rem; }
+        .qr-container { background: white; padding: 20px; border-radius: 12px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background:#1e3a5f;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-qrcode me-2"></i>
+                نظام الحضور QR
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm" onclick="toggleTheme()" title="تغيير المظهر">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </button>
+                    </li>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-warning" href="#" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>
+                                @User.Identity.Name
+                                @if (User.IsInRole("Admin")) { <span class="badge bg-danger ms-1">أدمن</span> }
+                                else if (User.IsInRole("Doctor")) { <span class="badge bg-info ms-1">دكتور</span> }
+                                else { <span class="badge bg-success ms-1">طالب</span> }
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">
+                                        <i class="fas fa-key me-2"></i> تغيير كلمة المرور
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="fas fa-sign-out-alt me-2"></i> تسجيل الخروج
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">دخول</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="col-md-2 d-none d-md-block sidebar py-3">
+                    <ul class="nav flex-column">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard"><i class="fas fa-tachometer-alt me-2"></i> لوحة التحكم</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Users"><i class="fas fa-users me-2"></i> المستخدمون</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Courses"><i class="fas fa-book me-2"></i> المواد الدراسية</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Enrollment" asp-action="Index"><i class="fas fa-users-cog me-2"></i> التسجيل</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Analytics" asp-action="Index"><i class="fas fa-chart-line me-2"></i> التحليلات</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Logs"><i class="fas fa-history me-2"></i> سجل الأحداث</a></li>
+                        }
+                        
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Session" asp-action="Index"><i class="fas fa-list me-2"></i> جلساتي</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Session" asp-action="Create"><i class="fas fa-plus-circle me-2"></i> جلسة جديدة</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Enrollment" asp-action="Index"><i class="fas fa-users-cog me-2"></i> تسجيل الطلاب</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Analytics" asp-action="Index"><i class="fas fa-chart-line me-2"></i> التحليلات</a></li>
+                        }
+
+                        @if (User.IsInRole("Student"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Attendance" asp-action="Scanner">
+                                    <i class="fas fa-camera me-2"></i>
+                                    مسح QR
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Attendance" asp-action="MyRecords">
+                                    <i class="fas fa-calendar-check me-2"></i>
+                                    سجل حضوري
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <!-- Main Content Area -->
+            <main class="@(User.Identity?.IsAuthenticated == true ? "col-md-10" : "col-12") py-4 px-4">
+                
+                @* Toasts notifications *@
+                @if (TempData["Success"] != null)
+                {
+                    <script>document.addEventListener('DOMContentLoaded', () => Toast.success('@TempData["Success"]'));</script>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <script>document.addEventListener('DOMContentLoaded', () => Toast.error('@TempData["Error"]'));</script>
+                }
+                @if (TempData["Info"] != null)
+                {
+                    <script>document.addEventListener('DOMContentLoaded', () => Toast.info('@TempData["Info"]'));</script>
+                }
+                @if (TempData["Warning"] != null)
+                {
+                    <script>document.addEventListener('DOMContentLoaded', () => Toast.warning('@TempData["Warning"]'));</script>
+                }
+
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="~/js/toast.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker
+                    .register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW error:', err));
+            });
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

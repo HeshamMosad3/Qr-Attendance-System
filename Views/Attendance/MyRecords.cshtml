@@ -1,0 +1,214 @@
+﻿@model List<QRAttendanceSystem.Models.AttendanceRecord>
+@{
+    ViewData["Title"] = "سجل حضوري";
+    var courseStats = ViewBag.CourseStats as IEnumerable<dynamic> ?? new List<dynamic>();
+    var enrolled = ViewBag.EnrolledCourses as List<QRAttendanceSystem.Models.Course> ?? new List<QRAttendanceSystem.Models.Course>();
+}
+
+<h4 class="mb-4 fw-bold">
+    <i class="fas fa-calendar-check me-2 text-success"></i>سجل حضوري
+</h4>
+
+<!-- Overall Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#1e3a5f,#2d6a9f); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@Model.Count</div>
+                <div class="small opacity-75">إجمالي الحضور</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#28a745,#20c997); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@Model.Count(r => r.Status == QRAttendanceSystem.Models.AttendanceStatus.OnTime)</div>
+                <div class="small opacity-75">في الوقت</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#fd7e14,#ffc107); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@Model.Count(r => r.Status == QRAttendanceSystem.Models.AttendanceStatus.Late)</div>
+                <div class="small opacity-75">متأخر</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0" style="background:linear-gradient(135deg,#6f42c1,#e83e8c); color:white;">
+            <div class="card-body py-3">
+                <div class="display-6 fw-bold">@Model.Select(r => r.Session?.CourseId).Distinct().Count()</div>
+                <div class="small opacity-75">مواد</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- نسبة الحضور لكل مادة -->
+@if (courseStats.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            <i class="fas fa-chart-bar me-2"></i>حضوري لكل مادة
+        </div>
+        <div class="card-body">
+            @foreach (var stat in courseStats)
+            {
+                int attended = stat.Attended;
+                string courseName = stat.CourseName;
+                int onT = stat.OnTime;
+                int lateC = stat.Late;
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-semibold small">@courseName</span>
+                        <span class="small text-muted">
+                            @attended جلسة
+                            (<span class="text-success">@onT في الوقت</span> /
+                            <span class="text-warning">@lateC متأخر</span>)
+                        </span>
+                    </div>
+                    <div class="progress" style="height:10px; border-radius:99px;">
+                        <div class="progress-bar bg-success" style="width:@(attended > 0 ? Math.Round((double)onT / attended * 100) : 0)%"></div>
+                        <div class="progress-bar bg-warning" style="width:@(attended > 0 ? Math.Round((double)lateC / attended * 100) : 0)%"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- المواد المسجل فيها -->
+@if (enrolled.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            <i class="fas fa-book me-2 text-primary"></i>
+            موادي المسجل فيها
+            <span class="badge bg-primary ms-2">
+                @enrolled.Count
+            </span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                @foreach (var course in enrolled)
+                {
+                    // حساب نسبة الحضور لكل مادة
+                    var courseRecords = Model
+                        .Where(r => r.Session?.CourseId == course.Id)
+                        .ToList();
+                    
+                    int attended = courseRecords.Count;
+                    
+                    <div class="col-md-4 col-6">
+                        <div class="card border-0 h-100" style="background:#f0f4f8;">
+                            <div class="card-body py-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="fw-semibold small">
+                                        @course.Name
+                                    </span>
+                                    <span class="badge bg-dark">
+                                        @course.Code
+                                    </span>
+                                </div>
+                                <div class="text-muted small mb-2">
+                                    <i class="fas fa-graduation-cap me-1"></i>
+                                    السنة @course.AcademicYear
+                                    — @course.CreditHours ساعات
+                                </div>
+                                @if (attended > 0)
+                                {
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height:6px;">
+                                            <div class="progress-bar bg-success" style="width:100%"></div>
+                                        </div>
+                                        <span class="small fw-semibold text-success">
+                                            @attended حضور
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark small">
+                                        لم يسجل حضور بعد
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Detailed Records Table -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold"><i class="fas fa-list me-2"></i>التفاصيل</span>
+        <input type="text" id="searchRec" class="form-control form-control-sm w-auto"
+               placeholder="بحث..." onkeyup="filterRec()">
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>لا توجد سجلات بعد. امسح رمز QR في محاضرتك القادمة!</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="recTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>الجلسة</th>
+                            <th>المادة</th>
+                            <th>النوع</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+                        }
+                        @foreach (var record in Model)
+                        {
+                            <tr>
+                                <td>@(i++)</td>
+                                <td class="fw-semibold">@record.Session?.Title</td>
+                                <td>@record.Session?.Course?.Name</td>
+                                <td><span class="badge bg-secondary">@record.Session?.Type</span></td>
+                                <td>@record.ScannedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (record.Status == QRAttendanceSystem.Models.AttendanceStatus.OnTime)
+                                    {
+                                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>في الوقت</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>متأخر</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterRec() {
+            const val = document.getElementById('searchRec').value.toLowerCase();
+            document.querySelectorAll('#recTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(val) ? '' : 'none';
+            });
+        }
+    </script>
+}
