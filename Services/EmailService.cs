@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using QRAttendanceSystem.Models;
 using QRAttendanceSystem.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace QRAttendanceSystem.Services
 {
@@ -32,8 +33,10 @@ namespace QRAttendanceSystem.Services
                 message.Body = builder.ToMessageBody();
 
                 using var client = new SmtpClient();
-                await client.ConnectAsync(_settings.Host, _settings.Port,
-                    _settings.UseSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto);
+
+                // استخدام StartTls بشكل صريح لضمان التوافق مع Gmail و Railway
+                await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
+
                 await client.AuthenticateAsync(_settings.Username, _settings.Password);
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);
@@ -42,8 +45,8 @@ namespace QRAttendanceSystem.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "فشل إرسال إيميل إلى {Email}", toEmail);
-                // مش بنـthrow عشان مش نكسر الـ flow الأساسي
+                // تم تحسين الـ Log لعرض تفاصيل الخطأ بوضوح
+                _logger.LogError(ex, "فشل إرسال إيميل إلى {Email}. الخطأ: {Message}", toEmail, ex.Message);
             }
         }
 
