@@ -45,8 +45,8 @@ namespace QRAttendanceSystem.Services
             }
             catch (Exception ex)
             {
-                // تم تحسين الـ Log لعرض تفاصيل الخطأ بوضوح
-                _logger.LogError(ex, "فشل إرسال إيميل إلى {Email}. الخطأ: {Message}", toEmail, ex.Message);
+                // تغيير الـ Error لـ Critical عشان Railway يبرزه فوراً
+                _logger.LogCritical("فشل إرسال إيميل إلى {Email}. الخطأ الكامل هو: {Message}. التفاصيل: {StackTrace}", toEmail, ex.Message, ex.StackTrace);
             }
         }
 
