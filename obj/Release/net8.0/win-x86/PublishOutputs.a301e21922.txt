@@ -1,6 +1,7 @@
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\win-x86\PubTmp\Out\QRAttendanceSystem.exe
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\win-x86\PubTmp\Out\appsettings.Development.json
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\win-x86\PubTmp\Out\appsettings.json
+D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\win-x86\PubTmp\Out\appsettings.Production.json
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\win-x86\PubTmp\Out\dotnet-tools.json
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\win-x86\PubTmp\Out\QRAttendanceSystem.dll
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\win-x86\PubTmp\Out\QRAttendanceSystem.runtimeconfig.json

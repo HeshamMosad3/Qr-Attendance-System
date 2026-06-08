@@ -203,3 +203,4 @@ D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\refint\QR
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\QRAttendanceSystem.pdb
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\QRAttendanceSystem.genruntimeconfig.cache
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\ref\QRAttendanceSystem.dll
+D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Release\net8.0\QRAttendanceSystem.sourcelink.json

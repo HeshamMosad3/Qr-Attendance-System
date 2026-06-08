@@ -19,31 +19,29 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
+// ===== Services =====
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
-builder.Services.AddScoped<IGpsVerificationService, GpsVerificationService>(); // ← ده اللي ناقص أو غلط
+builder.Services.AddScoped<IGpsVerificationService, GpsVerificationService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<IDynamicQrService, DynamicQrService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
-// SignalR
-builder.Services.AddSignalR();
-builder.Services.AddScoped<IGpsVerificationService, GpsVerificationService>();
-// Background Service
-builder.Services.AddHostedService<QrRefreshBackgroundService>();
 
-// Email Settings
+builder.Services.AddHostedService<QrRefreshBackgroundService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
-// Database
+// ===== Database =====
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Identity
+// ===== Identity =====
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -58,7 +56,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// Cookie Config
+// ===== Cookie =====
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -68,7 +66,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-// Authorization Policies
+// ===== Authorization =====
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", p => p.RequireRole("Admin"));
@@ -77,15 +75,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("DoctorOrAdmin", p => p.RequireRole("Doctor", "Admin"));
 });
 
-// IHttpContextAccessor (for IP)
-builder.Services.AddHttpContextAccessor();
-
 // ===== Rate Limiting =====
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = 429;
 
-    // سياسة Login — 10 محاولات كل دقيقة
     options.AddFixedWindowLimiter("login", o =>
     {
         o.Window = TimeSpan.FromMinutes(1);
@@ -94,7 +88,6 @@ builder.Services.AddRateLimiter(options =>
         o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
 
-    // سياسة Attendance — 5 محاولات كل 30 ثانية
     options.AddFixedWindowLimiter("attendance", o =>
     {
         o.Window = TimeSpan.FromSeconds(30);
@@ -102,7 +95,6 @@ builder.Services.AddRateLimiter(options =>
         o.QueueLimit = 0;
     });
 
-    // سياسة عامة — 100 طلب في الدقيقة
     options.AddFixedWindowLimiter("general", o =>
     {
         o.Window = TimeSpan.FromMinutes(1);
@@ -111,53 +103,46 @@ builder.Services.AddRateLimiter(options =>
         o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
 
-    // Callback لما يتجاوز الحد
     options.OnRejected = async (context, token) =>
     {
         context.HttpContext.Response.StatusCode = 429;
-
-        // التحقق مما إذا كان الطلب عبارة عن API / JSON
         if (context.HttpContext.Request.Headers["Accept"].ToString().Contains("application/json"))
-        {
             await context.HttpContext.Response.WriteAsync("{\"error\":\"Too many requests\"}", token);
-        }
         else
-        {
             context.HttpContext.Response.Redirect("/Home/Error?code=429");
-        }
     };
 });
 
+// ===== Build App =====
 var app = builder.Build();
 
-// ===== Middleware Pipeline =====
-// استخدام الـ Middleware بشكل صحيح لمعالجة الأخطاء
+// ===== Middleware Pipeline (الترتيب مهم جداً) =====
+
+// 1. Exception Handling — لازم يكون أول حاجة
 app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseExceptionHandler("/Home/Error");
+app.UseHsts();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
+// 2. HTTPS & Static Files
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// 3. Routing
 app.UseRouting();
 
-// تفعيل الـ Rate Limiting بعد الـ Routing
+// 4. Rate Limiting بعد Routing
 app.UseRateLimiter();
 
+// 5. Auth
 app.UseAuthentication();
 app.UseAuthorization();
+
+// 6. Logging
 app.UseSerilogRequestLogging();
 
-// ===== Endpoints (Routing) =====
-
-// SignalR Hub Route 
+// ===== Endpoints =====
 app.MapHub<AttendanceHub>("/hubs/attendance");
 
-// Default Route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
@@ -176,6 +161,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         Log.Error(ex, "خطأ أثناء تهيئة قاعدة البيانات");
+        // لا تعمل throw في Production عشان التطبيق ميوقفش
     }
 }
 

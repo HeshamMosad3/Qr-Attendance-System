@@ -202,3 +202,5 @@ D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Debug\net8.0\refint\QRAt
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Debug\net8.0\QRAttendanceSystem.pdb
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Debug\net8.0\QRAttendanceSystem.genruntimeconfig.cache
 D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Debug\net8.0\ref\QRAttendanceSystem.dll
+D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\bin\Debug\net8.0\dotnet-tools.json
+D:\C#كورس\QRAttendanceSystem\QRAttendanceSystem\obj\Debug\net8.0\QRAttendanceSystem.sourcelink.json
