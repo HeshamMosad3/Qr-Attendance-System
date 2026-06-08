@@ -29,17 +29,27 @@ namespace QRAttendanceSystem.Controllers
             var students = await _userManager.GetUsersInRoleAsync("Student");
             var doctors = await _userManager.GetUsersInRoleAsync("Doctor");
 
-            var courseStats = await _context.Courses
-                .Select(c => new CourseAttendanceStat
+            // 1. جلب البيانات أولاً من قاعدة البيانات
+            var courses = await _context.Courses
+                .Include(c => c.Sessions)
+                    .ThenInclude(s => s.AttendanceRecords)
+                .ToListAsync();
+
+            // 2. إجراء الحسابات في الذاكرة (Memory)
+            var courseStats = courses.Select(c =>
+            {
+                var totalAttendance = c.Sessions.Sum(s => s.AttendanceRecords.Count);
+                var totalPossible = c.Sessions.Count * students.Count;
+
+                return new CourseAttendanceStat
                 {
                     CourseName = c.Name,
                     TotalSessions = c.Sessions.Count,
-                    TotalAttendance = c.Sessions.SelectMany(s => s.AttendanceRecords).Count(),
-                    AttendanceRate = c.Sessions.Count == 0 ? 0 :
-                        Math.Round((double)c.Sessions.SelectMany(s => s.AttendanceRecords).Count()
-                            / (c.Sessions.Count * students.Count) * 100, 1)
-                })
-                .ToListAsync();
+                    TotalAttendance = totalAttendance,
+                    AttendanceRate = (c.Sessions.Count == 0 || students.Count == 0) ? 0 :
+                        Math.Round((double)totalAttendance / totalPossible * 100, 1)
+                };
+            }).ToList();
 
             var vm = new DashboardViewModel
             {
