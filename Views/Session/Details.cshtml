@@ -4,7 +4,6 @@
 }
 
 <div class="row">
-    <!-- QR Card -->
     <div class="col-md-5 mb-4">
         <div class="card text-center h-100">
             <div class="card-header py-3" style="background: linear-gradient(135deg, #1e3a5f, #2d6a9f); color:white;">
@@ -14,7 +13,7 @@
                 @if (Model.Session.IsActive && Model.SecondsRemaining > 0)
                 {
                     <div class="qr-container mb-3">
-                        <img src="data:image/png;base64,@Model.QrCodeBase64"
+                        <img id="qrImage" src="data:image/png;base64,@Model.QrCodeBase64"
                              alt="QR Code" style="width:220px;height:220px;" />
                     </div>
                     <div class="alert alert-success py-2 w-100 text-center">
@@ -33,7 +32,6 @@
                     </div>
                 }
 
-                <!-- Attendance URL -->
                 <div class="input-group mt-2 mb-3">
                     <input type="text" class="form-control form-control-sm" value="@Model.AttendUrl" id="attendUrl" readonly>
                     <button class="btn btn-outline-secondary btn-sm" onclick="copyUrl()">
@@ -41,7 +39,6 @@
                     </button>
                 </div>
 
-                <!-- Actions -->
                 <div class="d-grid gap-2 w-100">
                     @if (Model.Session.IsActive)
                     {
@@ -64,9 +61,7 @@
         </div>
     </div>
 
-    <!-- Details & Attendance -->
     <div class="col-md-7 mb-4">
-        <!-- Session Info -->
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title fw-bold">@Model.Session.Title</h5>
@@ -93,22 +88,18 @@
             </div>
         </div>
 
-        <!-- Attendance Summary -->
         <div class="card mb-3">
             <div class="card-body">
                 <div class="row text-center">
                     <div class="col-4">
-                        <!-- أضفنا id="totalCount" -->
                         <div class="display-6 fw-bold text-primary" id="totalCount">@Model.AttendanceRecords.Count</div>
                         <div class="small text-muted">إجمالي الحضور</div>
                     </div>
                     <div class="col-4">
-                        <!-- أضفنا id="onTimeCount" -->
                         <div class="display-6 fw-bold text-success" id="onTimeCount">@Model.OnTimeCount</div>
                         <div class="small text-muted">في الوقت</div>
                     </div>
                     <div class="col-4">
-                        <!-- أضفنا id="lateCount" -->
                         <div class="display-6 fw-bold text-warning" id="lateCount">@Model.LateCount</div>
                         <div class="small text-muted">متأخر</div>
                     </div>
@@ -116,7 +107,6 @@
             </div>
         </div>
 
-        <!-- Attendance Table -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="fw-semibold"><i class="fas fa-list me-2"></i>كشف الحضور</span>
@@ -135,11 +125,9 @@
                                 <th>الحالة</th>
                             </tr>
                         </thead>
-                        <!-- أضفنا id="attendanceBody" -->
                         <tbody id="attendanceBody">
                             @if (!Model.AttendanceRecords.Any())
                             {
-                                <!-- أضفنا id="emptyRow" كصف داخل الجدول -->
                                 <tr id="emptyRow">
                                     <td colspan="4" class="text-center py-4 text-muted">
                                         <i class="fas fa-inbox fa-2x mb-2"></i><br>لا يوجد حضور بعد
@@ -177,40 +165,39 @@
 </div>
 
 @section Scripts {
-    <!-- تأكد من وجود مكتبة SignalR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    
+
     <script>
         // ==========================================
         // 1. Timer & URL Logic
         // ==========================================
         const BASE_URL = window.location.protocol + "//" + window.location.host;
+        let totalSeconds = 30; // حدد الوقت الافتراضي لتحديث الـ QR (مثلاً 30 ثانية)
         let seconds = @Model.SecondsRemaining;
-        const totalSeconds = seconds;
 
         function updateTimer() {
-            if (seconds <= 0) {
-                document.getElementById('timer').textContent = '0';
-                document.getElementById('timerBar').style.width = '0%';
-                document.getElementById('timerBar').className = 'progress-bar bg-danger';
-                clearInterval(interval);
-                location.reload();
-                return;
-            }
-            seconds--;
-            document.getElementById('timer').textContent = seconds;
-            const pct = (seconds / totalSeconds) * 100;
-            const bar = document.getElementById('timerBar');
-            bar.style.width = pct + '%';
-            if (pct < 30) bar.className = 'progress-bar bg-danger';
-            else if (pct < 60) bar.className = 'progress-bar bg-warning';
+        if (seconds <= 0) {
+        document.getElementById('timer').textContent = '0';
+        document.getElementById('timerBar').style.width = '0%';
+        document.getElementById('timerBar').className = 'progress-bar bg-danger';
+        // تم إلغاء لقطة الـ reload لكي يعمل التحديث اللحظي عبر الـ SignalR بسلاسة
+        return;
+        }
+        seconds--;
+        document.getElementById('timer').textContent = seconds;
+        const pct = (seconds / totalSeconds) * 100;
+        const bar = document.getElementById('timerBar');
+        bar.style.width = pct + '%';
+        if (pct < 30) bar.className = 'progress-bar bg-danger';
+        else if (pct < 60) bar.className = 'progress-bar bg-warning';
+        else bar.className = 'progress-bar bg-success';
         }
 
         const interval = setInterval(updateTimer, 1000);
 
         function copyUrl() {
-            navigator.clipboard.writeText(document.getElementById('attendUrl').value);
-            alert('تم نسخ الرابط!');
+        navigator.clipboard.writeText(document.getElementById('attendUrl').value);
+        alert('تم نسخ الرابط!');
         }
 
         // ==========================================
@@ -219,61 +206,78 @@
         const SESSION_ID = @Model.Session.Id;
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/hubs/attendance")
-            .withAutomaticReconnect()
-            .build();
+        .withUrl("/hubs/attendance")
+        .withAutomaticReconnect()
+        .build();
 
-        // استقبال طالب جديد
+        // استقبال بيانات حضور الطلاب لايف وتحديث الجدول
         connection.on("NewAttendance", (data) => {
-            // تحديث العدادات
-            document.getElementById("totalCount").textContent = data.totalCount;
-            document.getElementById("onTimeCount").textContent = data.onTimeCount;
-            document.getElementById("lateCount").textContent = data.lateCount;
+        document.getElementById("totalCount").textContent = data.totalCount;
+        document.getElementById("onTimeCount").textContent = data.onTimeCount;
+        document.getElementById("lateCount").textContent = data.lateCount;
 
-            // إضافة صف جديد في الجدول
-            const tbody = document.getElementById("attendanceBody");
-            const emptyRow = document.getElementById("emptyRow");
-            if (emptyRow) emptyRow.remove();
+        const tbody = document.getElementById("attendanceBody");
+        const emptyRow = document.getElementById("emptyRow");
+        if (emptyRow) emptyRow.remove();
 
-            const newRow = document.createElement("tr");
-            newRow.style.animation = "fadeIn .5s ease"; // إضافة حركة بسيطة للظهور
-            newRow.innerHTML = `
-                <td>${data.totalCount}</td>
-                <td class="fw-semibold">${data.studentName}</td>
-                <td>${data.scannedAt}</td>
-                <td>
-                    <span class="badge ${data.status === 'OnTime' ? 'bg-success' : 'bg-warning text-dark'}">
-                        ${data.status === 'OnTime' ? 'في الوقت' : 'متأخر'}
-                    </span>
-                </td>`;
-            
-            // إضافة الطالب الجديد في أعلى الجدول
-            tbody.insertBefore(newRow, tbody.firstChild);
+        const newRow = document.createElement("tr");
+        newRow.style.animation = "fadeIn .5s ease";
+        newRow.innerHTML = `
+        <td>${data.totalCount}</td>
+        <td class="fw-semibold">${data.studentName}</td>
+        <td>${data.scannedAt}</td>
+        <td>
+        <span class="badge ${data.status === 'OnTime' ? 'bg-success' : 'bg-warning text-dark'}">
+        ${data.status === 'OnTime' ? 'في الوقت' : 'متأخر'}
+        </span>
+        </td>`;
+
+        tbody.insertBefore(newRow, tbody.firstChild);
         });
 
-        // بدء الاتصال والانضمام للجلسة
+        // 🔴 الكود المضاف: استقبال تحديث الـ QR التلقائي من السيرفر وتغيير الصورة 🔴
+        connection.on("UpdateQr", (newBase64, newAttendUrl) => {
+        // تحديث الصورة
+        document.getElementById("qrImage").src = "data:image/png;base64," + newBase64;
+
+        // تحديث الرابط المخفي خلف الكود وفي مستطيل النسخ
+        document.getElementById("attendUrl").value = newAttendUrl;
+
+        // إعادة تصفير العداد ليعمل الـ Progress bar من جديد
+        seconds = totalSeconds;
+        document.getElementById('timerBar').className = 'progress-bar bg-success';
+
+        console.log("تم استلام تحديث كود الـ QR بنجاح دون الحاجة لعمل ريفريش!");
+        });
+
+        // تشغيل الاتصال والربط برقم الجلسة الحالي
         async function startConnection() {
-            try {
-                await connection.start();
-                console.log("SignalR ✅ متصل");
-                
-                await connection.invoke("JoinSession", SESSION_ID.toString());
-                console.log("Joined session:", SESSION_ID);
-            } catch (err) {
-                console.error("SignalR error:", err);
-                setTimeout(startConnection, 3000);
-            }
+        try {
+        await connection.start();
+        console.log("SignalR ✅ متصل بنجاح");
+
+        await connection.invoke("JoinSession", SESSION_ID.toString());
+        console.log("Joined session group:", SESSION_ID);
+        } catch (err) {
+        console.error("SignalR connection error:", err);
+        setTimeout(startConnection, 3000);
+        }
         }
 
-        // تشغيل الاتصال
         startConnection();
     </script>
 
-    <!-- تنسيق حركة الظهور للصف الجديد -->
     <style>
         @@keyframes fadeIn {
-            from { background-color: #d4edda; opacity: 0; }
-            to { background-color: transparent; opacity: 1; }
+        from {
+        background-color: #d4edda;
+        opacity: 0;
+        }
+
+        to {
+        background-color: transparent;
+        opacity: 1;
+        }
         }
     </style>
 }
