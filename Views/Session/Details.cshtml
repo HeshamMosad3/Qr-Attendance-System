@@ -18,7 +18,7 @@
                     </div>
                     <div class="alert alert-success py-2 w-100 text-center">
                         <i class="fas fa-clock me-1"></i>
-                        متبقي: <span id="timer" class="fw-bold timer-badge">@Model.SecondsRemaining</span> ثانية
+                        متبقي: <span id="timer" class="fw-bold timer-badge">30</span> ثانية
                     </div>
                     <div class="progress w-100 mb-3" style="height:6px;">
                         <div id="timerBar" class="progress-bar bg-success" style="width:100%"></div>
@@ -172,15 +172,14 @@
         // 1. Timer & URL Logic
         // ==========================================
         const BASE_URL = window.location.protocol + "//" + window.location.host;
-        let totalSeconds = 30; // حدد الوقت الافتراضي لتحديث الـ QR (مثلاً 30 ثانية)
-        let seconds = @Model.SecondsRemaining;
+        let totalSeconds = 30; // حدد الوقت الافتراضي لتحديث الـ QR
+        let seconds = 30;      // تم تثبيت البداية على 30 ثانية بدلاً من وقت الجلسة الإجمالي
 
         function updateTimer() {
         if (seconds <= 0) {
         document.getElementById('timer').textContent = '0';
         document.getElementById('timerBar').style.width = '0%';
         document.getElementById('timerBar').className = 'progress-bar bg-danger';
-        // تم إلغاء لقطة الـ reload لكي يعمل التحديث اللحظي عبر الـ SignalR بسلاسة
         return;
         }
         seconds--;
@@ -234,14 +233,15 @@
 
         tbody.insertBefore(newRow, tbody.firstChild);
         });
-        // 🔴 الكود الصحيح المتوافق مع السيرفر 🔴
+
+        // استقبال تحديث الـ QR من السيرفر
         connection.on("QrRefreshed", (data) => {
-        // السيرفر بيبعت object اسمه data وجواه التفاصيل
+        // تحديث الصورة والرابط
         document.getElementById("qrImage").src = "data:image/png;base64," + data.qrBase64;
         document.getElementById("attendUrl").value = data.attendUrl;
 
-        // إعادة ضبط عداد الثواني لـ 30 ثانية عشان يدي تأثير التحديث المستمر
-        seconds = 30; // لو حاببها 30 ثانية بالظبط
+        // إعادة ضبط عداد الثواني لـ 30 ثانية
+        seconds = 30;
         document.getElementById('timerBar').className = 'progress-bar bg-success';
 
         console.log("تم استلام تحديث كود الـ QR بنجاح! وقت التحديث: " + data.refreshedAt);
