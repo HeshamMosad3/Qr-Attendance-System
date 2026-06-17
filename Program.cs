@@ -11,6 +11,8 @@ using Serilog;
 using QRAttendanceSystem.BackgroundServices;
 using QRAttendanceSystem.Hubs;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(new ConfigurationBuilder()
         .AddJsonFile("appsettings.json")

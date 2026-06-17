@@ -20,7 +20,7 @@ namespace QRAttendanceSystem.Controllers
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _http;
         private readonly IDynamicQrService _dynamicQrService;
-        private readonly IPdfService _pdfService; 
+        private readonly IPdfService _pdfService;
 
         public SessionController(ISessionService sessionService, IQrCodeService qrService,
             IAuditLogService audit, UserManager<AppUser> userManager,
@@ -34,7 +34,7 @@ namespace QRAttendanceSystem.Controllers
             _context = context;
             _http = http;
             _dynamicQrService = dynamicQrService;
-            _pdfService = pdfService; // ← حقن الخدمة
+            _pdfService = pdfService;
         }
 
         public async Task<IActionResult> Index()
@@ -48,7 +48,8 @@ namespace QRAttendanceSystem.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Courses = await _context.Courses.Where(c => c.IsActive).ToListAsync();
-            return View(new CreateSessionViewModel { SessionDate = DateTime.Now });
+            // تم التعديل هنا ليكون UtCw لتجنب أخطاء توقيت PostgreSQL السحابية
+            return View(new CreateSessionViewModel { SessionDate = DateTime.UtcNow });
         }
 
         [HttpPost]
@@ -80,7 +81,6 @@ namespace QRAttendanceSystem.Controllers
                 return Forbid();
 
             var attendUrl = $"{Request.Scheme}://{Request.Host}/Attendance/Attend?token={session.QrToken}";
-
 
             var vm = new SessionDetailsViewModel
             {
@@ -173,9 +173,6 @@ namespace QRAttendanceSystem.Controllers
                 $"Attendance_{session.Title}_{DateTime.Now:yyyyMMdd}.xlsx");
         }
 
-        // ==========================================
-        // Action الخاص بتصدير الـ PDF
-        // ==========================================
         public async Task<IActionResult> ExportPdf(int id)
         {
             var session = await _sessionService.GetSessionByIdAsync(id);
