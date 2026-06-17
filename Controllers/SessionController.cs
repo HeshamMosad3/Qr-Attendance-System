@@ -48,8 +48,12 @@ namespace QRAttendanceSystem.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Courses = await _context.Courses.Where(c => c.IsActive).ToListAsync();
-            // تم التعديل هنا ليكون UtCw لتجنب أخطاء توقيت PostgreSQL السحابية
-            return View(new CreateSessionViewModel { SessionDate = DateTime.UtcNow });
+
+            // هنجيب الوقت الحالي ونشيل منه الثواني والأجزاء من الثانية عشان المتصفح ما يعترضش
+            var now = DateTime.UtcNow;
+            var cleanDate = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, now.Kind);
+
+            return View(new CreateSessionViewModel { SessionDate = cleanDate });
         }
 
         [HttpPost]

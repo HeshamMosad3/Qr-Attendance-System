@@ -173,13 +173,49 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<AppDbContext>();
         await context.Database.MigrateAsync();
+
+        // استدعاء السيدر بتاعك زي ما هو
         await DbSeeder.SeedAsync(services);
+
+        // ==========================================
+        // كود إجباري لضمان إنشاء حساب الأدمن
+        // ==========================================
+        var userManager = services.GetRequiredService<UserManager<AppUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        // 1. التأكد من وجود رتبة الأدمن
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+
+        // 2. التأكد من وجود حساب الأدمن
+        var adminEmail = "admin@eelu.edu.eg";
+        var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
+
+        if (existingAdmin == null)
+        {
+            var adminUser = new AppUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+                FullName = "مدير النظام", // حقل الاسم
+                IsActive = true
+            };
+
+            var result = await userManager.CreateAsync(adminUser, "Admin@123");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+            }
+        }
     }
     catch (Exception ex)
     {
         Log.Error(ex, "خطأ أثناء تهيئة قاعدة البيانات");
-        // لا تعمل throw في Production عشان التطبيق ميوقفش
     }
+
 }
 
 app.Run();
