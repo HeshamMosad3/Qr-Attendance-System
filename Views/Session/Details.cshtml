@@ -234,20 +234,17 @@
 
         tbody.insertBefore(newRow, tbody.firstChild);
         });
+        // 🔴 الكود الصحيح المتوافق مع السيرفر 🔴
+        connection.on("QrRefreshed", (data) => {
+        // السيرفر بيبعت object اسمه data وجواه التفاصيل
+        document.getElementById("qrImage").src = "data:image/png;base64," + data.qrBase64;
+        document.getElementById("attendUrl").value = data.attendUrl;
 
-        // 🔴 الكود المضاف: استقبال تحديث الـ QR التلقائي من السيرفر وتغيير الصورة 🔴
-        connection.on("UpdateQr", (newBase64, newAttendUrl) => {
-        // تحديث الصورة
-        document.getElementById("qrImage").src = "data:image/png;base64," + newBase64;
-
-        // تحديث الرابط المخفي خلف الكود وفي مستطيل النسخ
-        document.getElementById("attendUrl").value = newAttendUrl;
-
-        // إعادة تصفير العداد ليعمل الـ Progress bar من جديد
-        seconds = totalSeconds;
+        // إعادة ضبط عداد الثواني لـ 30 ثانية عشان يدي تأثير التحديث المستمر
+        seconds = 30; // لو حاببها 30 ثانية بالظبط
         document.getElementById('timerBar').className = 'progress-bar bg-success';
 
-        console.log("تم استلام تحديث كود الـ QR بنجاح دون الحاجة لعمل ريفريش!");
+        console.log("تم استلام تحديث كود الـ QR بنجاح! وقت التحديث: " + data.refreshedAt);
         });
 
         // تشغيل الاتصال والربط برقم الجلسة الحالي
