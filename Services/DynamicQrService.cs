@@ -24,36 +24,37 @@ namespace QRAttendanceSystem.Services
         public async Task RefreshSessionQrAsync(int sessionId)
         {
             using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider
-                .GetRequiredService<AppDbContext>();
-            var qrService = scope.ServiceProvider
-                .GetRequiredService<IQrCodeService>();
-            var config = scope.ServiceProvider
-                .GetRequiredService<IConfiguration>();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var qrService = scope.ServiceProvider.GetRequiredService<IQrCodeService>();
+            var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
             var session = await context.Sessions
                 .Include(s => s.Course)
-                .FirstOrDefaultAsync(s => s.Id == sessionId
-                    && s.IsActive);
+                .FirstOrDefaultAsync(s => s.Id == sessionId && s.IsActive);
 
             if (session == null) return;
 
-            // توليد token جديد
             var newToken = qrService.GenerateQrToken();
-            var expiryMinutes = config.GetValue<int>(
-                "AppSettings:QrExpiryMinutes", 30);
+            var expiryMinutes = config.GetValue<int>("AppSettings:QrExpiryMinutes", 30);
 
             session.QrToken = newToken;
-            session.QrExpiresAt = DateTime.UtcNow
-                .AddMinutes(expiryMinutes);
+
+            // 1. تعديل التوقيت لـ Now بدلاً من UtcNow ليتطابق مع فحص الحضور
+            session.QrExpiresAt = DateTime.Now.AddMinutes(expiryMinutes);
 
             await context.SaveChangesAsync();
 
-            // بناء رابط الحضور الجديد
-            var attendUrl = $"/Attendance/Attend?token={newToken}";
+            // 2. إجبار السيرفر على وضع الرابط كاملاً (Absolute URL) داخل الـ QR Code
+            var baseUrl = config.GetValue<string>("AppSettings:BaseUrl")?.TrimEnd('/');
+            if (string.IsNullOrEmpty(baseUrl) || baseUrl.Contains("runasp.net"))
+            {
+                // استخدام رابط Railway كضمان لو الرابط القديم لسه في الإعدادات
+                baseUrl = "https://qr-attendance-system-production-bc1e.up.railway.app";
+            }
 
-            // توليد صورة QR جديدة
-            // الرابط الكامل بيتبني في الـ Background Service
+            var attendUrl = $"{baseUrl}/Attendance/Attend?token={newToken}";
+
+            // توليد صورة QR جديدة بالرابط الكامل
             var qrBase64 = qrService.GenerateQrCodeBase64(attendUrl);
 
             // إرسال للدكتور فوراً عن طريق SignalR
@@ -64,10 +65,8 @@ namespace QRAttendanceSystem.Services
                     token = newToken,
                     qrBase64 = qrBase64,
                     attendUrl = attendUrl,
-                    expiresAt = session.QrExpiresAt
-                        .ToString("o"), // ISO 8601
-                    refreshedAt = DateTime.UtcNow
-                        .ToString("HH:mm:ss")
+                    expiresAt = session.QrExpiresAt.ToString("o"),
+                    refreshedAt = DateTime.Now.ToString("HH:mm:ss") // تعديل لـ Now
                 });
 
             _logger.LogInformation(
